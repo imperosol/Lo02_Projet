@@ -42,7 +42,6 @@ public class PlateauRectangle implements StrategyPlateau {
 			}
 			
 		}
-		System.out.println("");
 
 		
 		int incrementation = 2 - this.borneLigne[1] + this.borneLigne[0];
@@ -52,9 +51,6 @@ public class PlateauRectangle implements StrategyPlateau {
 		incrementation = 4 - this.borneColonne[1] + this.borneColonne[0];
 		this.borneColonne[0]-=incrementation;
 		this.borneColonne[1]+=incrementation;
-		
-		System.out.println(borneLigne[0] + " " + borneLigne[1]);
-		System.out.println(borneColonne[0] + " " + borneColonne[1]);
 			
 	}
 	
@@ -124,22 +120,39 @@ public class PlateauRectangle implements StrategyPlateau {
 		List<Integer> position = new ArrayList<Integer>();
 		position.add(0,0);
 		position.add(1,0);
+		System.out.println("");
+		System.out.print("     ");
+		for (int i=borneColonne[0];i<=borneColonne[1];i++) {
+			if (i>=0) {
+				System.out.print(i + "    ");
+			}
+			else {
+				System.out.print(i + "   ");
+			}
+		}
 		
-		for (int i=this.borneLigne[0];i<=this.borneLigne[1];i++) {
+		for (int i=this.borneLigne[1];i>=this.borneLigne[0];i--) {
 			System.out.println(" ");
-			System.out.print(i + " ");
+			
+			if (i>=0) {
+				System.out.print(i + "  ");
+			}
+			else {
+				System.out.print(i + " ");
+			}
+			
 			
 			for (int j=borneColonne[0];j<=borneColonne[1];j++) {
 				position.set(0,i);
 				position.set(1,j);
 				if(plateau.containsKey(position)) {
-					System.out.print(plateau.get(position));
+					System.out.print(" " + plateau.get(position) + " ");
 				}
 				else if(plateauBool.containsKey(position)) {
-					System.out.print(" + ");
+					System.out.print(" -+- ");
 				}
 				else {
-					System.out.print(" - ");
+					System.out.print(" --- ");
 				}
 			}
 		}

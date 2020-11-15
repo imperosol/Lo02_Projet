@@ -2,15 +2,35 @@ package Source;
 
 public class Carte {
 	public enum Couleur {
-		vert,rouge,bleu;
+		vert("V"),rouge("R"),bleu("B");
+
+	     private String abreviation ;  
+	      
+	     private Couleur(String abreviation) {  
+	         this.abreviation = abreviation ;  
+	    }  
+	      
+	     public String getAbreviation() {  
+	         return  this.abreviation ;  
+	    }  
 	}
 	
 	public enum Forme {
-		triangle,carre,cercle;
+		triangle("T"),carre("V"),cercle("o");
+		
+	     private String abreviation ;  
+	      
+	     private Forme(String abreviation) {  
+	         this.abreviation = abreviation ;  
+	    }  
+	      
+	     public String getAbreviation() {  
+	         return  this.abreviation ;  
+	    }
 	}
 	
 	private Couleur couleur; // 0 = vert, 1 = rouge, 2 = bleu
-	private Forme forme; // 0 = triangle, 1 = carré, 2 = cercle
+	private Forme forme; // 0 = triangle, 1 = carrÃ©, 2 = cercle
 	private boolean plein;
 	
 	public Carte(Couleur couleur, Forme forme,boolean plein ) {
@@ -34,10 +54,10 @@ public class Carte {
 	
 	public String toString() {
 		if (this.plein) {
-			return this.couleur + " " + this.forme + " plein";
+			return this.couleur.getAbreviation() + this.forme.getAbreviation() + "P";
 		}
 		else {
-			return this.couleur + " " + this.forme + " vide";
+			return this.couleur.getAbreviation() + this.forme.getAbreviation() + "V";
 		}
 	}
 	

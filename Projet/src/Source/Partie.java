@@ -32,7 +32,6 @@ public class Partie {
 		position.add(1,0);
 		this.plateauBool.put(position,true);
 		this.plateauBool1.put(1,true);
-		System.out.print(this.plateauBool.containsKey(position));
 		this.context.getBorne(this.plateau);
 	}
 	
@@ -40,7 +39,6 @@ public class Partie {
 	//Ses 2 méthodes seront écrite via un pattern strategy
 	public void ouAjouterCarte() {
 		// Prend en entrée le plateau et en sortie donne un autre plateau de bboleen avec où rajouter carte
-		System.out.println(plateau);
 		plateauBool = context.ouAjouterCarte(this.plateau);
 	}
 	
