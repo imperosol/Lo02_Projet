@@ -101,6 +101,15 @@ public class Partie {
 		partie.ajouterCarte();
 		partie.ouAjouterCarte();
 		partie.afficherPlateau();
+		partie.ajouterCarte();
+		partie.ouAjouterCarte();
+		partie.afficherPlateau();
+		partie.ajouterCarte();
+		partie.ouAjouterCarte();
+		partie.afficherPlateau();
+		partie.ajouterCarte();
+		partie.ouAjouterCarte();
+		partie.afficherPlateau();
 	}
 	
 	
