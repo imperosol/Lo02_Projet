@@ -57,7 +57,7 @@ public class Joueur {
 		
 	}
 	
-	
+	//test
 	public static void main(String[] args) {
 		Pioche pioche = new Pioche();
 		Joueur joueur = new Joueur(pioche,1,true);

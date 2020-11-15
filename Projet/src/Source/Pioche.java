@@ -37,6 +37,7 @@ public class Pioche {
 		return pioche.remove();
 	}
 	
+	//test
 	public static void main(String[] args) {
 		Pioche pioche = new Pioche();
 		for (int i=0;i<18;i++) {
