@@ -16,7 +16,7 @@ public class Carte {
 	}
 	
 	public enum Forme {
-		triangle("T"),carre("V"),cercle("o");
+		triangle("T"),carre("C"),cercle("o");
 		
 	     private String abreviation ;  
 	      
@@ -29,8 +29,8 @@ public class Carte {
 	    }
 	}
 	
-	private Couleur couleur; // 0 = vert, 1 = rouge, 2 = bleu
-	private Forme forme; // 0 = triangle, 1 = carré, 2 = cercle
+	private Couleur couleur;
+	private Forme forme;
 	private boolean plein;
 	
 	public Carte(Couleur couleur, Forme forme,boolean plein ) {

@@ -26,7 +26,7 @@ public class PlateauRectangle implements StrategyPlateau {
 		for (Map.Entry<List<Integer>, Carte> mapEntry : plateau.entrySet()) {
 			
 			position = mapEntry.getKey();
-			
+			// recherche position max/min
 			if (position.get(0) < this.borneLigne[0]) {
 				this.borneLigne[0] = position.get(0);
 			}
@@ -43,7 +43,6 @@ public class PlateauRectangle implements StrategyPlateau {
 			
 		}
 
-		
 		int incrementation = 2 - this.borneLigne[1] + this.borneLigne[0];
 		this.borneLigne[0]-=incrementation;
 		this.borneLigne[1]+=incrementation;
@@ -77,15 +76,20 @@ public class PlateauRectangle implements StrategyPlateau {
 				List<Integer> position = new ArrayList<Integer>();
 				position.add(positionMap.get(0) + i);
 				position.add(positionMap.get(1));
-				this.carteBool(position);
+				if (this.carteBool(position)) {
+					this.plateauBool.put(position, true);
+				}
 				
 				position = new ArrayList<Integer>();
 				position.add(positionMap.get(0));
 				position.add(positionMap.get(1)+i);
-				this.carteBool(position);		
+				if (this.carteBool(position)) {
+					this.plateauBool.put(position, true);
+				}
 			}
 			
 		}		
+		
 		return this.plateauBool;
 	}
 
@@ -101,7 +105,27 @@ public class PlateauRectangle implements StrategyPlateau {
 			List<Integer> position = new ArrayList<Integer>();
 			position.add(positionCarte.get(0) + i);
 			position.add(positionCarte.get(1));
-			this.carteBool(position);
+			if (this.carteBool(position)) {
+				int voisinCarte = 0;
+				for (Integer j=-1;j<=1;j+=2) { // on regarde s'il existe au moins un voisin carte à la case cible
+					List<Integer> position2 = new ArrayList<Integer>();
+					position2.add(position.get(0) + j);
+					position2.add(position.get(1));
+					if (this.carteBoolBouger(position2)) {
+						voisinCarte+=1;
+					}
+					
+					position2 = new ArrayList<Integer>();
+					position2.add(position.get(0));
+					position2.add(position.get(1)+j);
+					if (this.carteBoolBouger(position2)) {
+						voisinCarte+=1;
+					}		
+				}
+				if (voisinCarte>1) {
+					this.plateauBool.put(position, true);
+				}
+			}
 			
 			position = new ArrayList<Integer>();
 			position.add(positionCarte.get(0));
@@ -157,23 +181,49 @@ public class PlateauRectangle implements StrategyPlateau {
 			}
 		}
 		
+		System.out.println(""); // Retour chariot
+		
 	}
 	
-	public void carteBool(List<Integer> position) {
+	public Boolean carteBool(List<Integer> position) {
 		if (!(position.get(0) >= this.borneLigne[0])){
-
+			return false;
 		}
 		else if (!(position.get(0) <= this.borneLigne[1])){
-
+			return false;
 		}
 		else if (!(position.get(1) >= this.borneColonne[0])){
-
+			return false;
 		}
 		else if (!(position.get(1) <= this.borneColonne[1])){
-			
+			return false;
 		}
 		else if (!(this.plateau.containsKey(position))){
-			this.plateauBool.put(position, true);
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+	
+	public Boolean carteBoolBouger(List<Integer> position) {
+		if (!(position.get(0) >= this.borneLigne[0])){
+			return false;
+		}
+		else if (!(position.get(0) <= this.borneLigne[1])){
+			return false;
+		}
+		else if (!(position.get(1) >= this.borneColonne[0])){
+			return false;
+		}
+		else if (!(position.get(1) <= this.borneColonne[1])){
+			return false;
+		}
+		else if (this.plateau.containsKey(position)){
+			return true;
+		}
+		else {
+			return false;
 		}
 	}
 
