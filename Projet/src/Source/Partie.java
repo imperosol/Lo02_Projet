@@ -10,7 +10,7 @@ import java.util.Scanner;
 import Source.Carte.Couleur;
 import Source.Carte.Forme;
 
-public class Partie {
+public class Partie implements ScoreInterface {
 	// pattern stratégie pour forme plateau
 	private Map<List<Integer>,Carte> plateau = new HashMap<List<Integer>,Carte>(); // plateau de jeu qui lie position et carte
 	private Map<List<Integer>,Boolean> plateauBool = new HashMap<List<Integer>,Boolean>(); // plateau contenant les posititons ou on peut mettre des cartes
@@ -21,9 +21,7 @@ public class Partie {
 	private Scanner clavier = new Scanner(System.in);
 	
 	// Joueurs de la partie
-	private Joueur joueur1;
-	private Joueur joueur2;
-	private Joueur joueur3;
+	private Joueur[] joueur = new Joueur[3];
 	
 	private ContextPlateau context; // Stock stratégie utilisée
 	
@@ -32,6 +30,8 @@ public class Partie {
 	private boolean modeAvance = false; //provisoire, pas de mode avancé pour l'instant
 	private Carte carteCachee; // Stock carte cachée
 	
+	//utile pour score
+	//private String = new String( Rectangle;
 	
 		
 	
@@ -205,6 +205,21 @@ public class Partie {
 		return this.modeAvance;
 	}
 	
+	public Map<List<Integer>,Carte> getPlateau() {
+		return this.plateau;
+	}
+	
+	public Joueur[] getJoueur() {
+		return joueur;
+	}
+	
+	//visiteur
+	@Override
+	public void accept(ScoreVisitor visitor) {
+		 visitor.visit(this);
+	}
+	
+	
 	//test
 	public static void main(String[] args) {
 		Partie partie = new Partie();
@@ -260,4 +275,7 @@ public class Partie {
 		position.add(1,2);
 		partie.ajouterCarte(position, carte);
 	}
+
+
+
 }

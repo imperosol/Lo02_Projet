@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-public class Joueur {
+public class Joueur implements ScoreInterface {
 	
 	private Carte carteVictoire;
 	private int numeroJoueur;
@@ -126,7 +126,9 @@ public class Joueur {
 	
 	
 	// Visteur
-	public void accepterVisiteur() {
-		
+
+	@Override
+	public void accept(ScoreVisitor visitor) {
+		 visitor.visit(this);
 	}
 }
