@@ -114,10 +114,12 @@ public class Score implements ScoreVisitor{
 		
 		return this.score[i];
 	}
-		
+	
+	
+	//Visiteur
 	@Override
 	public void visit(Joueur joueur) {
-		
+		//prend carte victoire du joueur
 	}
 	
 	@Override

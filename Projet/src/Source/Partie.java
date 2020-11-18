@@ -30,10 +30,7 @@ public class Partie implements ScoreInterface {
 	private boolean modeAvance = false; //provisoire, pas de mode avancé pour l'instant
 	private Carte carteCachee; // Stock carte cachée
 	
-	//utile pour score
-	//private String = new String( Rectangle;
 	
-		
 	
 	public Partie() {
 		this.context = new ContextPlateau(new PlateauRectangle());// Pour l'instant que des plateaux rectangles
