@@ -78,7 +78,6 @@ public class Partie {
 	
 	// Prend en entrée le plateau et en sortie donne un autre plateau de booleen avec où rajouter carte
 	public void ouAjouterCarte() {
-		
 		this.plateauBool = context.ouAjouterCarte(this.plateau);
 	}
 	
@@ -86,13 +85,12 @@ public class Partie {
 	// donne en sortie vraie si on peux bouger la carte
 	public Boolean ouBougerCarte(List<Integer> position) {
 		
-		this.plateauBoolCarte = context.ouBougerCarte(this.plateau,position);
-		this.carteABouger = plateau.get(position);
-		
-		if (plateauBoolCarte.isEmpty()){
+		if (plateau.get(position)==null){
 			return false;
 		}
 		else {
+			this.plateauBool = context.ouBougerCarte(this.plateau,position);
+			this.carteABouger = plateau.get(position);
 			return true;
 		}
 	}
@@ -135,7 +133,7 @@ public class Partie {
 	
 	public Boolean bougerCarte(List<Integer> positionCarte, List<Integer> positionFinale) {
 		
-		if (this.plateauBoolCarte.containsKey(positionFinale)==false) { //On ne peux pas bouger la carte sur cette case
+		if (this.plateauBool.containsKey(positionFinale)==false) { //On ne peux pas bouger la carte sur cette case
 			System.out.println("la carte ne peux pas être bougée ici");
 			return false;
 		}
@@ -197,10 +195,6 @@ public class Partie {
 		context.afficherPlateau(this.plateau, this.plateauBool);
 	}
 	
-	public void afficherPlateauBouger() {
-		context.afficherPlateau(this.plateau, this.plateauBoolCarte);
-	}
-	
 	public void changerJoueur() {
 		// Rajouter méthodes pour changer de joueurs
 		
@@ -227,6 +221,7 @@ public class Partie {
 		partie.changerJoueur();
 		partie.afficherPlateau();
 		
+		
 		// On ajoute une carte en (1,0)
 		position = new ArrayList<Integer>();
 		position.add(0,1);
@@ -237,7 +232,8 @@ public class Partie {
 		
 		//on bouge la carte en (1,0)
 		System.out.println(partie.ouBougerCarte(position));
-		partie.afficherPlateauBouger();
+		partie.afficherPlateau();
+		partie.ouAjouterCarte();
 		
 		
 		// On ajoute une carte en (1,1)
@@ -250,7 +246,7 @@ public class Partie {
 		
 		//on bouge la carte en (1,1) en (0,1)
 		System.out.println(partie.ouBougerCarte(position));
-		partie.afficherPlateauBouger();
+		partie.afficherPlateau();
 		List <Integer> positionCarte = new ArrayList<Integer>();
 		positionCarte.add(0,0);
 		positionCarte.add(1,1);

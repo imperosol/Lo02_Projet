@@ -68,7 +68,6 @@ public class PlateauRectangle implements StrategyPlateau {
 		 * On met cette case dans le map booléen
 		 */		
 		
-		
 		for(Map.Entry<List<Integer>, Carte> mapEntry : plateau.entrySet()) {
 			List<Integer> positionMap = mapEntry.getKey(); 
 			for (Integer i=-1;i<=1;i+=2) { // permet de trouver les 4 voisins;
@@ -88,8 +87,7 @@ public class PlateauRectangle implements StrategyPlateau {
 				}
 			}
 			
-		}		
-		
+		}	
 		return this.plateauBool;
 	}
 
@@ -99,40 +97,13 @@ public class PlateauRectangle implements StrategyPlateau {
 		
 		this.plateauBool = new HashMap<List<Integer>,Boolean>();
 		this.plateau= plateau;
+		Carte carteABouger = plateau.get(positionCarte);
+		System.out.print(carteABouger);
+		this.plateau.remove(positionCarte);
+		this.plateauBool = this.ouAjouterCarte(this.plateau);
+		this.plateau.put(positionCarte,carteABouger);
+		this.plateauBool.remove(positionCarte);
 		
-		for (Integer i=-1;i<=1;i+=2) { // permet de trouver les 4 voisins;
-			
-			List<Integer> position = new ArrayList<Integer>();
-			position.add(positionCarte.get(0) + i);
-			position.add(positionCarte.get(1));
-			if (this.carteBool(position)) {
-				int voisinCarte = 0;
-				for (Integer j=-1;j<=1;j+=2) { // on regarde s'il existe au moins un voisin carte à la case cible
-					List<Integer> position2 = new ArrayList<Integer>();
-					position2.add(position.get(0) + j);
-					position2.add(position.get(1));
-					if (this.carteBoolBouger(position2)) {
-						voisinCarte+=1;
-					}
-					
-					position2 = new ArrayList<Integer>();
-					position2.add(position.get(0));
-					position2.add(position.get(1)+j);
-					if (this.carteBoolBouger(position2)) {
-						voisinCarte+=1;
-					}		
-				}
-				if (voisinCarte>1) {
-					this.plateauBool.put(position, true);
-				}
-			}
-			
-			position = new ArrayList<Integer>();
-			position.add(positionCarte.get(0));
-			position.add(positionCarte.get(1)+i);
-			this.carteBool(position);
-			
-		}
 		return this.plateauBool;
 	
 	}	
