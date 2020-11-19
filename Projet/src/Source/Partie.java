@@ -29,7 +29,8 @@ public class Partie implements ScoreInterface {
     }  
 	
 	private int nbrJoueur;
-	private boolean modeAvance = false; //provisoire, pas de mode avancé pour l'instant
+	private int joueurEnCours;
+	private boolean modeAvance;
 	private Carte carteCachee; // Stock carte cachée
 	
 	
@@ -58,25 +59,62 @@ public class Partie implements ScoreInterface {
 		
 		//initialisation joueurs
 		this.modeAvance = modeAvance;
-		/*
-		do {
-			System.out.println("combien de joueurs (2 ou 3) :");
-			this.nbrJoueur = clavier.nextInt();
-			
-			if(this.nbrJoueur == 2) {
-				//rajouter possibilité créer joueur IA
-				this.joueur1 = new Joueur (pioche,1,true,this);
-				this.joueur2 = new Joueur (pioche,2,true,this);
-			}
-			else if(this.nbrJoueur == 3) {
-				//rajouter possibilité créer joueur IA
-				this.joueur1 = new Joueur (pioche,1,true,this);
-				this.joueur2 = new Joueur (pioche,2,true,this);
-				this.joueur3 = new Joueur (pioche,3,true,this);
-			}
-		}while(this.nbrJoueur =! 2 && this.nbrJoueur =! 3);
+		int IA;
 		
-		*/
+		
+		// TODO modifier constructeur joueur
+		//initalisation joueur 1
+		do {
+			System.out.println("Joueur 1 IA ? (oui : 1, non : 0) ");
+			IA = clavier.nextInt();
+			
+		}while(IA != 1 && IA != 0);
+		if (IA == 1) {
+			this.joueur[0] = new Joueur(true);
+		}
+		else {
+			this.joueur[0] = new Joueur(false);
+		}
+		
+		//initalisation joueur 2
+		do {
+			System.out.println("Joueur 2 IA ? (oui : 1, non : 0) ");
+			IA = clavier.nextInt();
+			
+		}while(IA != 1 && IA != 0);
+		if (IA == 1) {
+			this.joueur[1] = new Joueur(true);
+		}
+		else {
+			this.joueur[1] = new Joueur(false);
+		}
+		
+		//initalisation joueur 3
+		do {
+			System.out.println("Rajouter un joueur 3 ? (oui : 1, non : 0) ");
+			IA = clavier.nextInt();
+			
+		}while(IA != 1 && IA != 0);
+		if (IA == 1) {
+			this.nbrJoueur = 3;
+		}
+		else {
+			this.nbrJoueur = 2;
+		}
+		
+		if (this.nbrJoueur == 3) {
+			do {
+				System.out.println("Joueur 3 IA ? (oui : 1, non : 0) ");
+				IA = clavier.nextInt();
+				
+			}while(IA != 1 && IA != 0);
+			if (IA == 1) {
+				this.joueur[2] = new Joueur(true);
+			}
+			else {
+				this.joueur[2] = new Joueur(false);
+			}
+		}
 	}
 	
 	
@@ -113,7 +151,6 @@ public class Partie implements ScoreInterface {
 			System.out.println("impossible de rajouter la carte ici");
 			return false; // retourne que la carte n'a pas été ajoutée
 		}
-			
 		/*
 		// utilisateur rentre valeur
 		System.out.println("");
@@ -135,6 +172,7 @@ public class Partie implements ScoreInterface {
 		//ajout de la valeur
 		
 		*/
+
 	}
 	
 	public Boolean bougerCarte(List<Integer> positionCarte, List<Integer> positionFinale) {
@@ -216,7 +254,7 @@ public class Partie implements ScoreInterface {
 	}
 	
 	public Joueur[] getJoueur() {
-		return joueur;
+		return this.joueur;
 	}
 	
 	//visiteur
@@ -228,14 +266,13 @@ public class Partie implements ScoreInterface {
 	
 	//test
 	public static void main(String[] args) {
-		Partie partie = new Partie(Context.triangle,true);
+
 		Carte carte = new Carte(Couleur.rouge,Forme.carre,true);
 		
 		//Exemple fonctionnement du code partie avec plateau rectangle 
 		
-		/*
-		
 		// On ajoute une carte en (0,0)
+		Partie partie = new Partie(Context.rectangle,true);
 		List <Integer> position = new ArrayList<Integer>();
 		position.add(0,0);
 		position.add(1,0);
@@ -283,33 +320,20 @@ public class Partie implements ScoreInterface {
 		position.add(1,2);
 		partie.ajouterCarte(position, carte);
 		
-		//Test pour plateauTriangle
-		partie.changerJoueur();
+		// On ajoute une carte en (1,1)
 		position = new ArrayList<Integer>();
-		position.add(0,1);
+		position.add(0,-1);
 		position.add(1,1);
 		partie.ajouterCarte(position, carte);
-		
 		partie.changerJoueur();
-		position = new ArrayList<Integer>();
-		position.add(0,1);
-		position.add(1,2);
-		partie.ajouterCarte(position, carte);
-		
-		partie.changerJoueur();
-		position = new ArrayList<Integer>();
-		position.add(0,1);
-		position.add(1,3);
-		partie.ajouterCarte(position, carte);
-		
-		position = new ArrayList<Integer>();
-		position.add(0,1);
-		position.add(1,4);
-		partie.ajouterCarte(position, carte);
 		partie.afficherPlateau();
 		
-		*/
+	
 		
+		//Exemple fonctionnement du code partie avec plateau rectangle 
+		
+		/*
+		Partie partie = new Partie(Context.triangle,true);
 		// On ajoute une carte en (0,0)
 		List <Integer> position = new ArrayList<Integer>();
 		position.add(0,0);
@@ -343,10 +367,7 @@ public class Partie implements ScoreInterface {
 		positionCarte.add(1,1);
 		System.out.println(partie.bougerCarte(position,positionCarte));
 		partie.afficherPlateau();
-
 		
+		*/
 	}
-
-
-
 }

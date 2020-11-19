@@ -9,11 +9,10 @@ public class PlateauRectangle implements StrategyPlateau {
 	
 	private int[] borneLigne = new int[2];
 	private int[] borneColonne = new int[2];
-	private boolean bordureDefinitif = false;
-	// rajouter condition bordure
 	
-	 private Map<List<Integer>, Boolean> plateauBool;
-	 private Map<List<Integer>, Carte> plateau;
+	
+	private Map<List<Integer>, Boolean> plateauBool;
+	private Map<List<Integer>, Carte> plateau;
 	
 	@Override
 	public void getBorne(Map<List<Integer>, Carte> plateau) {
@@ -94,7 +93,6 @@ public class PlateauRectangle implements StrategyPlateau {
 
 	@Override
 	public Map<List<Integer>, Boolean> ouBougerCarte(Map<List<Integer>, Carte> plateau, List<Integer> positionCarte) {
-		// getBorne(plateau); ? je pense pas
 		
 		this.plateauBool = new HashMap<List<Integer>,Boolean>();
 		this.plateau= plateau;
@@ -177,26 +175,4 @@ public class PlateauRectangle implements StrategyPlateau {
 			return false;
 		}
 	}
-	
-	public Boolean carteBoolBouger(List<Integer> position) {
-		if (!(position.get(0) >= this.borneLigne[0])){
-			return false;
-		}
-		else if (!(position.get(0) <= this.borneLigne[1])){
-			return false;
-		}
-		else if (!(position.get(1) >= this.borneColonne[0])){
-			return false;
-		}
-		else if (!(position.get(1) <= this.borneColonne[1])){
-			return false;
-		}
-		else if (this.plateau.containsKey(position)){
-			return true;
-		}
-		else {
-			return false;
-		}
-	}
-
 }

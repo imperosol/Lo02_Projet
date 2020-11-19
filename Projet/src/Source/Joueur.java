@@ -16,6 +16,10 @@ public class Joueur implements ScoreInterface {
 	private Scanner clavier = new Scanner(System.in);
 	// Private Partie;
 	
+	public Joueur(Boolean IA) { //TODO Juste pour pouvoir initialiser partie (A SUPPRIMER)
+		
+	}
+	
 	public Joueur(Pioche pioche, int numeroJoueur, boolean human, Partie partie) { 
 		// Rajouter partie, on en a besoin pour faire les méthodes
 		this.numeroJoueur = numeroJoueur;
