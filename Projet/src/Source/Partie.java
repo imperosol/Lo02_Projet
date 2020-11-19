@@ -24,7 +24,9 @@ public class Partie implements ScoreInterface {
 	private Joueur[] joueur = new Joueur[3];
 	
 	private ContextPlateau context; // Stock stratégie utilisée
-	
+	public enum Context {
+		rectangle,triangle;
+    }  
 	
 	private int nbrJoueur;
 	private boolean modeAvance = false; //provisoire, pas de mode avancé pour l'instant
@@ -32,8 +34,14 @@ public class Partie implements ScoreInterface {
 	
 	
 	
-	public Partie() {
-		this.context = new ContextPlateau(new PlateauRectangle());// Pour l'instant que des plateaux rectangles
+	public Partie(Context contextePlateau,Boolean modeAvance) {
+		
+		if (contextePlateau == Context.rectangle) {
+			this.context = new ContextPlateau(new PlateauRectangle());
+		}
+		else {
+			this.context = new ContextPlateau(new PlateauTriangle());
+		}
 		
 		//initialisation position de la 1er carte en (0,0)
 		List<Integer> position = new ArrayList<Integer>();
@@ -49,6 +57,7 @@ public class Partie implements ScoreInterface {
 		this.carteCachee = pioche.piocherCarte();
 		
 		//initialisation joueurs
+		this.modeAvance = modeAvance;
 		/*
 		do {
 			System.out.println("combien de joueurs (2 ou 3) :");
@@ -219,10 +228,12 @@ public class Partie implements ScoreInterface {
 	
 	//test
 	public static void main(String[] args) {
-		Partie partie = new Partie();
+		Partie partie = new Partie(Context.triangle,true);
 		Carte carte = new Carte(Couleur.rouge,Forme.carre,true);
 		
-		//Exemple fonctionnement du code partie
+		//Exemple fonctionnement du code partie avec plateau rectangle 
+		
+		/*
 		
 		// On ajoute une carte en (0,0)
 		List <Integer> position = new ArrayList<Integer>();
@@ -271,6 +282,69 @@ public class Partie implements ScoreInterface {
 		position.add(0,2);
 		position.add(1,2);
 		partie.ajouterCarte(position, carte);
+		
+		//Test pour plateauTriangle
+		partie.changerJoueur();
+		position = new ArrayList<Integer>();
+		position.add(0,1);
+		position.add(1,1);
+		partie.ajouterCarte(position, carte);
+		
+		partie.changerJoueur();
+		position = new ArrayList<Integer>();
+		position.add(0,1);
+		position.add(1,2);
+		partie.ajouterCarte(position, carte);
+		
+		partie.changerJoueur();
+		position = new ArrayList<Integer>();
+		position.add(0,1);
+		position.add(1,3);
+		partie.ajouterCarte(position, carte);
+		
+		position = new ArrayList<Integer>();
+		position.add(0,1);
+		position.add(1,4);
+		partie.ajouterCarte(position, carte);
+		partie.afficherPlateau();
+		
+		*/
+		
+		// On ajoute une carte en (0,0)
+		List <Integer> position = new ArrayList<Integer>();
+		position.add(0,0);
+		position.add(1,0);
+		partie.afficherPlateau();
+		partie.ajouterCarte(position, carte);
+		partie.changerJoueur();
+		partie.afficherPlateau();
+		
+		
+		// On ajoute une carte en (1,0)
+		position = new ArrayList<Integer>();
+		position.add(0,1);
+		position.add(1,0);
+		partie.ajouterCarte(position, carte);
+		partie.changerJoueur();
+		partie.afficherPlateau();
+		
+		// On ajoute une carte en (1,1)
+		position = new ArrayList<Integer>();
+		position.add(0,1);
+		position.add(1,1);
+		partie.ajouterCarte(position, carte);
+		partie.changerJoueur();
+		partie.afficherPlateau();
+
+		System.out.println(partie.ouBougerCarte(position));
+		partie.afficherPlateau();
+		List <Integer> positionCarte = new ArrayList<Integer>();
+		positionCarte.add(0,0);
+		positionCarte.add(1,1);
+		System.out.println(partie.bougerCarte(position,positionCarte));
+		partie.afficherPlateau();
+
+		
 	}
 
 

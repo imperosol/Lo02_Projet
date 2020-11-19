@@ -50,7 +50,8 @@ public class PlateauRectangle implements StrategyPlateau {
 		incrementation = 4 - this.borneColonne[1] + this.borneColonne[0];
 		this.borneColonne[0]-=incrementation;
 		this.borneColonne[1]+=incrementation;
-			
+		
+		System.out.println(borneColonne[0] + " " + borneColonne[1]);		
 	}
 	
 	@Override
