@@ -15,7 +15,6 @@ public class IAAleatoire implements StratégieJoueur{
 		
 
 		int Aleatoire = (int) random.nextInt(2);
-		Aleatoire = 1;
 		
 		if (Aleatoire==0) {
 			Map<List<Integer>,Boolean> plateauAjout = partie.ouAjouterCarte();
@@ -51,8 +50,8 @@ public class IAAleatoire implements StratégieJoueur{
 		}
 		
 		if(Aleatoire==2) {
-			List<Integer> positionCarte = new ArrayList();
-			List<Integer> positionFinale = new ArrayList();
+			List<Integer> positionCarte = new ArrayList<Integer>();
+			List<Integer> positionFinale = new ArrayList<Integer>();
 			boolean fin1 = false;
 			while (fin1 == false) {
 				positionCarte.add((int)random.nextInt(),(int)random.nextInt());

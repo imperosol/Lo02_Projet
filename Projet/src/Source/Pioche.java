@@ -2,9 +2,6 @@ package Source;
 
 import java.util.Queue;
 
-import Source.Carte.Couleur;
-import Source.Carte.Forme;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
@@ -37,6 +34,9 @@ public class Pioche {
 		return pioche.remove();
 	}
 	
+	public Boolean piocheVide() {
+		return pioche.isEmpty();
+	}
 	//test
 	public static void main(String[] args) {
 		Pioche pioche = new Pioche();

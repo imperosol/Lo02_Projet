@@ -2,6 +2,7 @@ package Source;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -11,16 +12,24 @@ import Source.Carte.Forme;
 public class Score implements ScoreVisitor{
 	private Map<List<Integer>,Carte> plateau = new HashMap<List<Integer>,Carte>();
 	
-	private Carte[] carteVictoire = new Carte[3];
-	private int[] score = new int[2];
-	
-	private int nbrJoueur;
-	private Joueur[] joueur;
+	private List<Carte> carteVictoire = new ArrayList<Carte>();
+	private List<Integer> score = new ArrayList<Integer>();
+	private List<Joueur> joueur = new ArrayList<Joueur>();
 	
 	public Score(Partie partie) {
-		//provisoire donne pour carte vicouire RCP
-		this.carteVictoire[0] = new Carte(Couleur.rouge,Forme.carre,true);
 		this.visit(partie);
+		int score;
+		int i=0;
+		Joueur joueurEnCours;
+		Iterator<Joueur> it = this.joueur.iterator();
+		
+		
+		while(it.hasNext()) {
+			joueurEnCours = it.next();
+			visit(joueurEnCours);
+			score = this.compterScore(i);
+			System.out.println("le score du joueur " + i + " est : " +score);
+		}
 	}
 	
 	
@@ -109,17 +118,17 @@ public class Score implements ScoreVisitor{
 	
 	public int compterScore(int i) {
 		
-		this.score[i] = this.compterScoreLigneColonne(carteVictoire[i], 0);
-		this.score[i] += this.compterScoreLigneColonne(carteVictoire[i], 1);
+		int score = this.compterScoreLigneColonne(carteVictoire.get(i), 0);
+		score += this.compterScoreLigneColonne(carteVictoire.get(i), 1);
 		
-		return this.score[i];
+		return score;
 	}
 	
 	
 	//Visiteur
 	@Override
 	public void visit(Joueur joueur) {
-		//prend carte victoire du joueur
+		this.carteVictoire.add(joueur.consulterCarteVictoire());
 	}
 	
 	@Override

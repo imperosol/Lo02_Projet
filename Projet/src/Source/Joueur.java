@@ -25,10 +25,15 @@ public class Joueur implements ScoreInterface {
 		this.carteVictoire = pioche.piocherCarte();
 		this.main= new ArrayList();
 		
+		if (partie.modeAvance()) {
+			piocherCarte(pioche);
+			piocherCarte(pioche);
+			piocherCarte(pioche);
+		}
 		
 	}
 	
-	public List getMain() {
+	public List<Carte> getMain() {
 		return this.main;
 	}
 	
@@ -61,7 +66,6 @@ public class Joueur implements ScoreInterface {
 	}
 	
 	public boolean placerCarteJoueur(Carte carte, List<Integer> position, Partie partie) {
-		System.out.println("yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy");
 		return partie.ajouterCarte( position, carte);
 	}
 	
@@ -74,6 +78,7 @@ public class Joueur implements ScoreInterface {
 		if (partie.modeAvance()==false) {
 			this.piocherCarte(pioche);
 		}
+		partie.ouAjouterCarte();
 		this.regarderPlateau(partie);
 		this.consulterCarteVictoire();
 		
@@ -84,10 +89,7 @@ public class Joueur implements ScoreInterface {
 		
 		if (partie.modeAvance()==true) {
 			this.piocherCarte(pioche);
-		}
-		
-		partie.changerJoueur();
-				
+		}		
 	}
 
 	

@@ -1,34 +1,7 @@
 package Source;
 
 public class Carte {
-	public enum Couleur {
-		vert("V"),rouge("R"),bleu("B");
 
-	     private String abreviation ;  
-	      
-	     private Couleur(String abreviation) {  
-	         this.abreviation = abreviation ;  
-	    }  
-	      
-	     public String getAbreviation() {  
-	         return  this.abreviation ;  
-	    }  
-	}
-	
-	public enum Forme {
-		triangle("T"),carre("C"),cercle("o");
-		
-	     private String abreviation ;  
-	      
-	     private Forme(String abreviation) {  
-	         this.abreviation = abreviation ;  
-	    }  
-	      
-	     public String getAbreviation() {  
-	         return  this.abreviation ;  
-	    }
-	}
-	
 	private Couleur couleur;
 	private Forme forme;
 	private boolean plein;

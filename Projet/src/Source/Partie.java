@@ -8,9 +8,6 @@ import java.util.Map;
 
 import java.util.Scanner;
 
-import Source.Carte.Couleur;
-import Source.Carte.Forme;
-
 public class Partie implements ScoreInterface {
 	// pattern stratégie pour forme plateau
 	private Map<List<Integer>,Carte> plateau = new HashMap<List<Integer>,Carte>(); // plateau de jeu qui lie position et carte
@@ -29,8 +26,12 @@ public class Partie implements ScoreInterface {
 	private boolean modeAvance;
 	private Carte carteCachee; // Stock carte cachée
 	
+	Pioche pioche;
+	
 	
 	public Partie(Context contextePlateau,Boolean modeAvance,Pioche pioche) {
+		
+		Scanner clavier = new Scanner(System.in);
 		
 		
 		if (contextePlateau == Context.rectangle) {
@@ -41,25 +42,92 @@ public class Partie implements ScoreInterface {
 		}
 		
 		//initialisation position de la 1er carte en (0,0)
-		List<Integer> position = new ArrayList<Integer>();
-		position.add(0,0);
-		position.add(1,0);
+
 		
 		//intialisation plateau booléen
-		this.plateauBool.put(position,true);
 		this.context.getBorne(this.plateau);
+		List<Integer> position = new ArrayList<Integer>();
+		position.add(0);
+		position.add(0);
+		this.plateauBool.put(position, true);
 		
 		//initialisation pioche
-		this.carteCachee = pioche.piocherCarte();
+		this.pioche = new Pioche();
+		this.carteCachee = this.pioche.piocherCarte();
 		
 		//initialisation joueurs
 		this.modeAvance = modeAvance;
-
-		this.joueur = new ArrayList();
 		
+		
+		int IA;
+		this.joueur = new ArrayList<Joueur>();
+		
+		do {
+			System.out.println("Joueur 1 IA ? (oui : 1, non : 0) ");
+			IA = clavier.nextInt();
+		}while(IA != 1 && IA != 0);
 
+		if (IA == 1) {
+			this.joueur.add(new Joueur(1,new IAAleatoire() , this, this.pioche));
+		}
+		else {
+			this.joueur.add(new Joueur(1,new JoueurReel() , this, this.pioche));
+		}
+
+		//initalisation joueur 2
+		do {
+			System.out.println("Joueur 2 IA ? (oui : 1, non : 0) ");
+			IA = clavier.nextInt();
+
+		}while(IA != 1 && IA != 0);
+		if (IA == 1) {
+			this.joueur.add(new Joueur(2,new IAAleatoire() , this, this.pioche));
+		}
+		else {
+			this.joueur.add(new Joueur(2,new JoueurReel() , this, this.pioche));
+		}
+		
+		
+		do {
+			System.out.println("Rajouter un joueur 3 ? (oui : 1, non : 0) ");
+			IA = clavier.nextInt();
+		}while(IA != 1 && IA != 0);
+		if (IA == 1) {
+			this.nbrJoueur = 3;
+		}
+		else {
+			this.nbrJoueur = 2;
+		}
+		
+		if (this.nbrJoueur == 3) {
+			if (IA == 1) {
+				this.joueur.add(new Joueur(3,new IAAleatoire() , this, this.pioche));
+			}
+			else {
+				this.joueur.add(new Joueur(3,new JoueurReel() , this, this.pioche));
+			}
+		}
 	}
+
 	
+	public void jouerPartie() {
+		int i=0;
+		Joueur joueurEnCours;
+		while (!(this.pioche.piocheVide())) {
+			joueurEnCours = this.joueur.get(i);
+			joueurEnCours.tour(this, this.pioche);
+			
+			if(i==(nbrJoueur-1)) {
+				i=0;
+			}
+			else {
+				i++;
+			}
+		}
+		
+		Score score = new Score(this);
+	
+	}
 	
 	public void ajouterJoueur(Joueur joueur) {
 		this.joueur.add(joueur);
@@ -69,7 +137,18 @@ public class Partie implements ScoreInterface {
 	
 	// Prend en entrée le plateau et en sortie donne un autre plateau de booleen avec où rajouter carte
 	public Map<List<Integer>,Boolean> ouAjouterCarte() {
-		return this.plateauBool = context.ouAjouterCarte(this.plateau);
+		
+		this.plateauBool = context.ouAjouterCarte(this.plateau);
+		
+		// Si 1er tour
+		if (this.plateauBool.size()==0) {
+			List<Integer> position = new ArrayList<Integer>();
+			position.add(0);
+			position.add(0);
+			this.plateauBool.put(position, true);
+		}
+		
+		return this.plateauBool;
 	}
 	
 	// Prend en entrée le plateau et en sortie donne un autre plateau de booleen avec où bougerCarte carte
@@ -114,11 +193,6 @@ public class Partie implements ScoreInterface {
 		context.afficherPlateau(this.plateau, this.plateauBool);
 	}
 	
-	public void changerJoueur() {
-		// Rajouter méthodes pour changer de joueurs
-		
-		ouAjouterCarte();
-	}
 	
 	public boolean modeAvance() { // joueur a besoin de savoir si on est en mode avancé
 		return this.modeAvance;
@@ -139,32 +213,14 @@ public class Partie implements ScoreInterface {
 	}
 	
 	
+	
 	//test
 	public static void main(String[] args) {
 
-		Carte carte = new Carte(Couleur.rouge,Forme.carre,true);
-		
-		//Exemple fonctionnement du code partie avec plateau rectangle 
-		
-		// On ajoute une carte en (0,0)
 		Pioche pioche = new Pioche();
-
-		Partie partie = new Partie(Context.rectangle,true,pioche);
+		Partie partie = new Partie(Context.rectangle,false,pioche);
 		
-		List <Integer> position = new ArrayList<Integer>();
-		position.add(0,0);
-		position.add(1,0);
-		partie.ajouterCarte(position, carte);
-		
-		
-		Joueur Moi = new  Joueur(1,new JoueurReel(),partie,pioche);
-		Moi.piocherCarte(pioche);
-		Moi.piocherCarte(pioche);
-		Moi.piocherCarte(pioche);
-		partie.ajouterJoueur(Moi);
-		Moi.tour(partie, pioche);
-		
-		
+		partie.jouerPartie();
 		
 		//Exemple fonctionnement du code partie avec plateau rectangle 
 		
