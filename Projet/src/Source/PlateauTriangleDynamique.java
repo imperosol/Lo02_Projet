@@ -260,7 +260,6 @@ public class PlateauTriangleDynamique implements StrategyPlateau{
 					this.min = maxBorne;
 					this.max = maxBorne+2;	
 					
-					borne.put(this.max, arg1)
 				}
 				else {
 					maxBorne-=1;
