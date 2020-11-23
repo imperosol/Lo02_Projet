@@ -26,7 +26,7 @@ public class ContextPlateau {
 		   strategy.afficherPlateau(plateau,plateauBool);
 	   }
 
-	public void initialiserPosition(List<Integer> position) {
+	   public void initialiserPosition(List<Integer> position) {
 		 strategy.initialiserPosition(position);
 		
 	}

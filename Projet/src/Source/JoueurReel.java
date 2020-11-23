@@ -27,6 +27,7 @@ public class JoueurReel implements StratégieJoueur{
 		Boolean aBougerCarte=true;
 		
 		while (action !=2) {
+			
 			partie.ouAjouterCarte();
 			partie.afficherPlateau();
 			if (aPlacerCarte) {
@@ -67,7 +68,7 @@ public class JoueurReel implements StratégieJoueur{
 				break;
 			case 2:
 				if(aPlacerCarte) {
-					System.out.println("Tu dois placer une carte avnt de terminer ton tour");
+					System.out.println("Tu dois placer une carte avant de terminer ton tour");
 					action=-1;
 					
 				}

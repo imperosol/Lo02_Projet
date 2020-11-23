@@ -49,7 +49,10 @@ public class Joueur implements ScoreInterface {
 		int i = stratégie.getDerniereCarte();
 		
 		if (carte != null) {
-			System.out.println("tu as pioché : " + carte);
+			if (this.stratégie instanceof JoueurReel) {
+				System.out.println("tu as pioché : " + carte);
+			}
+			
 			if (i != -1){
 				this.main.set(i,carte);
 			}

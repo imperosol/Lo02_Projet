@@ -306,7 +306,7 @@ public class Partie implements ScoreInterface {
 	public static void main(String[] args) {
 
 		Pioche pioche = new Pioche();
-		Partie partie = new Partie(Context.variante,false,pioche);
+		Partie partie = new Partie(Context.variante,true,pioche);
 		
 		partie.jouerPartie();
 	}
