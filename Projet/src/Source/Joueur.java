@@ -40,7 +40,16 @@ public class Joueur implements ScoreInterface {
 	public void piocherCarte(Pioche pioche) {
 		Carte carte = pioche.piocherCarte();
 		System.out.println("tu as pioché : " + carte);
-		this.main.add(carte);
+		
+		int i = stratégie.getDerniereCarte();
+		if (i != -1){
+			this.main.set(i,carte);
+		}
+		else {
+			this.main.add(carte);
+		}
+		
+		
 	}
 	
 	public Carte consulterCarteVictoire() {

@@ -8,11 +8,14 @@ import java.util.Scanner;
 import java.util.Set;
 
 public class JoueurReel implements StratégieJoueur{
+	
+	int numCarteJouee = -1;
+	
 	public void jouer(Joueur joueur,Partie partie) {
 		
 		Scanner EntreeJoueur = new Scanner(System.in);
 
-		System.out.println("Déroulement de votre tour?");
+		System.out.println("Déroulement de votre tour? 0/1/2");
 		 int action = EntreeJoueur.nextInt();
 		
 		if (action==0) {
@@ -21,7 +24,10 @@ public class JoueurReel implements StratégieJoueur{
 					System.out.print(it.next()+"  ");
 				}
 				System.out.println("Choix du numéro de la carte à jouer");
-				Carte carte = (Carte) joueur.getMain().get(EntreeJoueur.nextInt()-1);
+				
+				numCarteJouee = EntreeJoueur.nextInt()-1;
+				
+				Carte carte = (Carte) joueur.getMain().get(numCarteJouee);
 
 				Map<List<Integer>,Boolean> plateauAjout = partie.ouAjouterCarte();
 				Set<List<Integer>> ListeDeCléLibre = plateauAjout.keySet();
@@ -43,7 +49,10 @@ public class JoueurReel implements StratégieJoueur{
 				System.out.print(it.next()+"  ");
 			}
 			System.out.println("Choix du numéro de la carte à jouer");
-			Carte carte = (Carte) joueur.getMain().get(EntreeJoueur.nextInt()-1);
+			
+			numCarteJouee = EntreeJoueur.nextInt()-1;
+			
+			Carte carte = (Carte) joueur.getMain().get(numCarteJouee);
 
 			Map<List<Integer>,Boolean> plateauAjout = partie.ouAjouterCarte();
 			Set<List<Integer>> ListeDeCléLibre = plateauAjout.keySet();
@@ -113,7 +122,10 @@ public class JoueurReel implements StratégieJoueur{
 				System.out.print(it.next()+"  ");
 			}
 			System.out.println("Choix du numéro de la carte à jouer");
-			Carte carte = (Carte) joueur.getMain().get(EntreeJoueur.nextInt()-1);
+			
+			numCarteJouee = EntreeJoueur.nextInt()-1;
+			
+			Carte carte = (Carte) joueur.getMain().get(numCarteJouee);
 
 			Map<List<Integer>,Boolean> plateauAjout = partie.ouAjouterCarte();
 			Set<List<Integer>> ListeDeCléLibre = plateauAjout.keySet();
@@ -127,7 +139,11 @@ public class JoueurReel implements StratégieJoueur{
 			
 			
 			joueur.placerCarteJoueur(carte, position, partie);
-		}
-		
+		}		
+	}
+	
+	@Override
+	public int getDerniereCarte() {
+		return this.numCarteJouee;
 	}
 }

@@ -9,6 +9,9 @@ import java.util.Random;
 import java.util.Set;
 
 public class IAAleatoire implements StratégieJoueur{
+	
+	int numCarteJouee = -1;
+	
 	public void jouer(Joueur joueur,Partie partie) {
 		
 		Random random = new Random();
@@ -19,7 +22,10 @@ public class IAAleatoire implements StratégieJoueur{
 		if (Aleatoire==0) {
 			Map<List<Integer>,Boolean> plateauAjout = partie.ouAjouterCarte();
 			Set<List<Integer>> ListeDeCléLibre = plateauAjout.keySet();
-			Carte carte = (Carte) joueur.getMain().get(random.nextInt(joueur.getMain().size()));
+			
+			this.numCarteJouee = random.nextInt(joueur.getMain().size());
+			
+			Carte carte = (Carte) joueur.getMain().get(numCarteJouee);
 			List<Integer> place =  (List<Integer>) ListeDeCléLibre.toArray()[random.nextInt(ListeDeCléLibre.size())];
 			
 			joueur.placerCarteJoueur(carte,place, partie);
@@ -28,7 +34,9 @@ public class IAAleatoire implements StratégieJoueur{
 		if (Aleatoire==1) {
 			Map<List<Integer>,Boolean> plateauAjout = partie.ouAjouterCarte();
 			Set<List<Integer>> ListeDeCléLibre = plateauAjout.keySet();
-			Carte carte = (Carte) joueur.getMain().get(random.nextInt(joueur.getMain().size()));
+			
+			this.numCarteJouee = random.nextInt(joueur.getMain().size());
+			Carte carte = (Carte) joueur.getMain().get(this.numCarteJouee);
 			List<Integer> place =  (List<Integer>) ListeDeCléLibre.toArray()[random.nextInt(ListeDeCléLibre.size())];
 			
 			
@@ -63,7 +71,9 @@ public class IAAleatoire implements StratégieJoueur{
 			
 			Map<List<Integer>,Boolean> plateau = partie.ouAjouterCarte();
 			Set<List<Integer>> clé = plateau.keySet();
-			Carte carte = (Carte) joueur.getMain().get(random.nextInt(joueur.getMain().size()));
+			
+			this.numCarteJouee = random.nextInt(joueur.getMain().size());
+			Carte carte = (Carte) joueur.getMain().get(this.numCarteJouee);
 			List<Integer> place =  (List<Integer>) clé.toArray()[random.nextInt(clé.size())];
 			
 			
@@ -73,5 +83,10 @@ public class IAAleatoire implements StratégieJoueur{
 
 		}
 		
+	}
+	
+	@Override
+	public int getDerniereCarte() {
+		return this.numCarteJouee;
 	}
 }
