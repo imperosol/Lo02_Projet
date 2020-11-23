@@ -16,15 +16,30 @@ public class Carte {
 		return couleur.ordinal();
 	}
 	
+	public String affCouleur() {
+		return couleur.name();
+	}
+	
 	public int getForme() {
 		return forme.ordinal();
+	}
+	
+	public String affForme() {
+		return forme.name();
 	}
 	
 	public boolean getPlein() {
 		return plein;
 	}
 	
-	
+	public String affPlein() {
+		if (this.plein) {
+			return "formes pleines";
+		}
+		else {
+			return "formes vides";
+		}
+	}
 	public String toString() {
 		if (this.plein) {
 			return this.couleur.getAbreviation() + this.forme.getAbreviation() + "P";
