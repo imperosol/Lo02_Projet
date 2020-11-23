@@ -5,12 +5,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class PlateauTriangle implements StrategyPlateau {
-	
+public class PlateauVariante implements StrategyPlateau {
+
 	private Map<List<Integer>, Boolean> plateauBool;
 	private Map<List<Integer>, Carte> plateau;
 	
-	int[][] borne = {  {-3,3} , {-2,2} , {-1,1}};
+	private List<Integer> positionCarteVictoire;
+	int[][] borne = { {-1,0}, {-2,1}, {-2,1} , {-2,1} , {-1,0}};
 			
 	@Override
 	public Map<List<Integer>, Boolean> ouAjouterCarte(Map<List<Integer>, Carte> plateau) {
@@ -63,13 +64,13 @@ public class PlateauTriangle implements StrategyPlateau {
 
 	@Override
 	public void afficherPlateau(Map<List<Integer>, Carte> plateau, Map<List<Integer>, Boolean> plateauBool) {
-		
 		List<Integer> position = new ArrayList<Integer>();
 		position.add(0,0);
 		position.add(1,0);
+		
 		System.out.println("");
 		System.out.print("    ");
-		for (int i=-3;i<=3;i++) {
+		for (int i=-2;i<=1;i++) {
 			if (i>=0) {
 				System.out.print(i + "    ");
 			}
@@ -77,15 +78,14 @@ public class PlateauTriangle implements StrategyPlateau {
 				System.out.print(i + "   ");
 			}
 		}
+		System.out.println("");
 		
-		System.out.println(" ");
-		
-		// ligne 3
+		// ligne 2
 		System.out.print(2 + " ");
 		System.out.print("     ");
-		System.out.print("     ");
 		
-		for (int j=-1;j<=1;j++) {
+		
+		for (int j=-1;j<=0;j++) {
 			position.set(0,2);
 			position.set(1,j);
 			if(plateau.containsKey(position)) {
@@ -94,24 +94,8 @@ public class PlateauTriangle implements StrategyPlateau {
 			else if(plateauBool.containsKey(position)) {
 				System.out.print(" -+- ");
 			}
-			else {
-				System.out.print(" --- ");
-			}
-		}
-		System.out.println(""); // Retour chariot
-		
-		// ligne 2
-		System.out.print(1 + " ");
-		System.out.print("     ");
-		
-		for (int j=-2;j<=2;j++) {
-			position.set(0,1);
-			position.set(1,j);
-			if(plateau.containsKey(position)) {
-				System.out.print(" " + plateau.get(position) + " ");
-			}
-			else if(plateauBool.containsKey(position)) {
-				System.out.print(" -+- ");
+			else if (position == this.positionCarteVictoire) {
+				System.out.print(" -?- ");
 			}
 			else {
 				System.out.print(" --- ");
@@ -120,9 +104,30 @@ public class PlateauTriangle implements StrategyPlateau {
 		System.out.println(""); // Retour chariot
 		
 		// ligne 1
+		System.out.print(1 + " ");
+		
+		for (int j=-2;j<=1;j++) {
+			position.set(0,1);
+			position.set(1,j);
+			if(plateau.containsKey(position)) {
+				System.out.print(" " + plateau.get(position) + " ");
+			}
+			else if(plateauBool.containsKey(position)) {
+				System.out.print(" -+- ");
+			}
+			else if (position.equals(this.positionCarteVictoire)) {
+				System.out.print(" -?- ");
+			}
+			else {
+				System.out.print(" --- ");
+			}
+		}
+		System.out.println(""); // Retour chariot
+		
+		// ligne 0
 		System.out.print(0 + " ");
 		
-		for (int j=-3;j<=3;j++) {
+		for (int j=-2;j<=1;j++) {
 			position.set(0,0);
 			position.set(1,j);
 			if(plateau.containsKey(position)) {
@@ -131,28 +136,76 @@ public class PlateauTriangle implements StrategyPlateau {
 			else if(plateauBool.containsKey(position)) {
 				System.out.print(" -+- ");
 			}
+			else if (position.equals(this.positionCarteVictoire)) {
+				System.out.print(" -?- ");
+			}
 			else {
 				System.out.print(" --- ");
 			}
 		}
-		
-		
-		
 		System.out.println(""); // Retour chariot
-	}
 		
-	
+		// ligne -1
+		System.out.print(-1);
+		
+		
+		for (int j=-2;j<=1;j++) {
+			position.set(0,-1);
+			position.set(1,j);
+			if(plateau.containsKey(position)) {
+				System.out.print(" " + plateau.get(position) + " ");
+			}
+			else if(plateauBool.containsKey(position)) {
+				System.out.print(" -+- ");
+			}
+			else if (position.equals(this.positionCarteVictoire)) {
+				System.out.print(" -?- ");
+			}
+			else {
+				System.out.print(" --- ");
+			}
+		}
+		System.out.println(""); // Retour chariot
+		
+		// ligne -1
+		System.out.print(-2 + " ");
+		System.out.print("    ");
+		
+		for (int j=-1;j<=0;j++) {
+			position.set(0,-2);
+			position.set(1,j);
+			if(plateau.containsKey(position)) {
+				System.out.print(" " + plateau.get(position) + " ");
+			}
+			else if(plateauBool.containsKey(position)) {
+				System.out.print(" -+- ");
+			}
+			else if (position.equals(this.positionCarteVictoire)) {
+				System.out.print(" -?- ");
+			}
+			else {
+				System.out.print(" --- ");
+			}
+		}
+		System.out.println(""); // Retour chariot
+		
+	}
 
 	@Override
 	public void getBorne(Map<List<Integer>, Carte> plateau) {
 		
 	}
-
+	
+	public void initialiserPosition(List<Integer> position) {
+		positionCarteVictoire = new ArrayList<Integer>();
+		this.positionCarteVictoire = position;
+	}
+	
 	public Boolean carteBool(List<Integer> position) {
-		int posY = position.get(0);
+		int posY = position.get(0) + 2;
 		int posX = position.get(1);
 		
-		if (posY > 2){
+		if (posY > 4){
 			return false;
 		}
 		else if (posY < 0){
@@ -164,6 +217,9 @@ public class PlateauTriangle implements StrategyPlateau {
 		else if (posX < this.borne[posY][0]){
 			return false;
 		}
+		else if (position.equals(this.positionCarteVictoire)) {
+			return false;
+		}
 		else if (!(this.plateau.containsKey(position))){
 			return true;
 		}
@@ -172,10 +228,4 @@ public class PlateauTriangle implements StrategyPlateau {
 		}
 	}
 
-	@Override
-	public void initialiserPosition(List<Integer> position) {
-		// TODO Auto-generated method stub
-		
-	}
 }
-

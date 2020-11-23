@@ -13,15 +13,12 @@ public class Joueur implements ScoreInterface {
 	private StratégieJoueur stratégie ;
 	private List<Carte> main;
 	private Pioche pioche;
+
 	// Private Partie;
-	
-	public Joueur(int strategie) { //TODO Juste pour pouvoir initialiser partie (A SUPPRIMER)
-		
-	}
 	
 	public Joueur(int numeroJoueur,  StratégieJoueur strategie, Partie partie, Pioche pioche) { 
 		// Rajouter partie, on en a besoin pour faire les méthodes
-		this.numeroJoueur = numeroJoueur + 1 ;
+		this.numeroJoueur = numeroJoueur;
 		
 		this.stratégie = strategie;	
 		this.pioche = pioche;
@@ -61,6 +58,7 @@ public class Joueur implements ScoreInterface {
 			}
 		}
 		else {
+			
 			this.main.set(i,null);
 			List<Carte> mainNew = new ArrayList<Carte>();
 			Iterator<Carte> it = this.main.iterator();

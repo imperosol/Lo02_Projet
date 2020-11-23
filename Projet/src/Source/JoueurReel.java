@@ -39,11 +39,11 @@ public class JoueurReel implements StratégieJoueur{
 			
 			System.out.println("2 : terminer le tour");
 			
-			//do {
-				System.out.print("Action :");
+			do {
+				System.out.print("Action : ");
 				action = this.entreeJoueur.nextInt();
 					
-			//}while (action < 0||action>2);
+			}while (action < 0||action>2);
 			
 			switch (action) {
 			case 0:

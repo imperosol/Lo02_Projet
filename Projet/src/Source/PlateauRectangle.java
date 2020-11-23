@@ -173,4 +173,10 @@ public class PlateauRectangle implements StrategyPlateau {
 			return false;
 		}
 	}
+
+	@Override
+	public void initialiserPosition(List<Integer> position) {
+		// TODO Auto-generated method stub
+		
+	}
 }

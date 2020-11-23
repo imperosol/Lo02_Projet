@@ -11,4 +11,6 @@ public interface StrategyPlateau {
 	public void afficherPlateau(Map<List<Integer>,Carte> plateau, Map<List<Integer>,Boolean> plateauBool);
 	
 	public void getBorne(Map<List<Integer>, Carte> plateau);
+	
+	public void initialiserPosition(List<Integer> position);
 }

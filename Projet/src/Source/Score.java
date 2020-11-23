@@ -1,19 +1,15 @@
 package Source;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import Source.Carte.Couleur;
-import Source.Carte.Forme;
-
 public class Score implements ScoreVisitor{
-	private Map<List<Integer>,Carte> plateau = new HashMap<List<Integer>,Carte>();
+	private Map<List<Integer>,Carte> plateau;
 	
+	private List<Integer> positionCarteVictoire;
 	private List<Carte> carteVictoire = new ArrayList<Carte>();
-	private List<Integer> score = new ArrayList<Integer>();
 	private List<Joueur> joueur = new ArrayList<Joueur>();
 	
 	public Score(Partie partie) {
@@ -59,13 +55,13 @@ public class Score implements ScoreVisitor{
         Carte carte;
         
         
-		for (int i=-5;i<=5;i++) { //change de ligne
+		for (int i=-5;i<=5;i++) { //change de ligne/colonne
 			position.set(posX, i);
 	        int incCouleur = 0;
 	        int incForme = 0;
 	        int incPlein = 0;
 	        
-			for (int j=-5;j<=5;j++) { // change de colonne
+			for (int j=-5;j<=5;j++) { // change de colonne/ligne
 				position.set(posY, j);
 				
 				if (plateau.containsKey(position)) {
@@ -134,9 +130,13 @@ public class Score implements ScoreVisitor{
 	}
 	
 	public int compterScore(int i) {
+		Carte carteVictoire = this.carteVictoire.get(i);
+		if (this.positionCarteVictoire != null) {
+			plateau.put(positionCarteVictoire, carteVictoire);
+		}
 		
-		int score = this.compterScoreLigneColonne(carteVictoire.get(i), 0); // compte le score sur les lignes
-		score += this.compterScoreLigneColonne(carteVictoire.get(i), 1); // compte le score sur les colonnes
+		int score = this.compterScoreLigneColonne(carteVictoire, 0); // compte le score sur les lignes
+		score += this.compterScoreLigneColonne(carteVictoire, 1); // compte le score sur les colonnes
 		
 		return score;
 	}
@@ -151,6 +151,7 @@ public class Score implements ScoreVisitor{
 	@Override
 	public void visit(Partie partie) {
 		this.plateau = partie.getPlateau();
+		this.positionCarteVictoire = partie.getPositionCarteVictoire();
 		this.joueur = partie.getJoueur();
 	}
 }

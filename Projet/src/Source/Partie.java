@@ -17,14 +17,11 @@ public class Partie implements ScoreInterface {
 	private List<Joueur> joueur;
 	
 	private ContextPlateau context; // Stock stratégie utilisée
-	public enum Context {
-		rectangle,triangle;
-    }  
 	
 	private int nbrJoueur;
-	private int joueurEnCours;
 	private boolean modeAvance;
 	private Carte carteCachee; // Stock carte cachée
+	private List<Integer> positionCarteVictoire = null;
 	
 	Pioche pioche;
 	
@@ -32,13 +29,22 @@ public class Partie implements ScoreInterface {
 	public Partie(Context contextePlateau,Boolean modeAvance,Pioche pioche) {
 		
 		Scanner clavier = new Scanner(System.in);
-		
+		List<Integer> position;
+
 		
 		if (contextePlateau == Context.rectangle) {
 			this.context = new ContextPlateau(new PlateauRectangle());
 		}
-		else {
+		else if (contextePlateau == Context.rectangle) {
 			this.context = new ContextPlateau(new PlateauTriangle());
+		}
+		else {
+			this.context = new ContextPlateau(new PlateauVariante());
+			position = new ArrayList<Integer>();
+			position.add(-1);
+			position.add(0);
+			this.context.initialiserPosition(position);
+			this.positionCarteVictoire = position;
 		}
 		
 		//initialisation position de la 1er carte en (0,0)
@@ -46,7 +52,7 @@ public class Partie implements ScoreInterface {
 		
 		//intialisation plateau booléen
 		this.context.getBorne(this.plateau);
-		List<Integer> position = new ArrayList<Integer>();
+		position = new ArrayList<Integer>();
 		position.add(0);
 		position.add(0);
 		this.plateauBool.put(position, true);
@@ -234,8 +240,7 @@ public class Partie implements ScoreInterface {
 			ouAjouterCarte();
 			return true;
 		}
-
-}
+	}
 	
 	
 	public void afficherPlateau() {
@@ -251,10 +256,44 @@ public class Partie implements ScoreInterface {
 		return this.plateau;
 	}
 	
+	public List<Map<List<Integer>,Carte>> getPlateauListe() {
+		List<Map<List<Integer>,Carte>> plateauListe = new ArrayList<Map<List<Integer>,Carte>>();
+		Map<List<Integer>,Carte> plateauNew;
+		Carte carteVictoire;
+		
+		
+		if (positionCarteVictoire != null) {
+			
+			Iterator<Joueur> it = joueur.iterator();
+			while (it.hasNext()) {
+				plateauNew = new HashMap<List<Integer>,Carte>();
+				carteVictoire = it.next().consulterCarteVictoire();
+				
+				plateauNew = this.plateau;
+				
+				System.out.println("plop");
+				this.context.afficherPlateau(plateauNew, this.plateauBool);
+				plateauListe.add(plateauNew);
+				
+			}
+		}
+		else {
+
+			Iterator<Joueur> it = joueur.iterator();
+			while (it.hasNext()) {
+				plateauListe.add(plateau);
+			}
+		}
+		return plateauListe;
+	}
+	
 	public List<Joueur> getJoueur() {
 		return this.joueur;
 	}
 	
+	public List<Integer> getPositionCarteVictoire(){
+		return this.positionCarteVictoire;
+	}
 	//visiteur
 	@Override
 	public void accept(ScoreVisitor visitor) {
@@ -267,7 +306,7 @@ public class Partie implements ScoreInterface {
 	public static void main(String[] args) {
 
 		Pioche pioche = new Pioche();
-		Partie partie = new Partie(Context.rectangle,false,pioche);
+		Partie partie = new Partie(Context.variante,false,pioche);
 		
 		partie.jouerPartie();
 	}

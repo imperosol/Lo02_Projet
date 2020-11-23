@@ -345,4 +345,10 @@ public class PlateauTriangleDynamique implements StrategyPlateau{
 		return true;
 	}
 
+	@Override
+	public void initialiserPosition(List<Integer> position) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }
