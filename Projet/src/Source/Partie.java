@@ -115,10 +115,49 @@ public class Partie implements ScoreInterface {
 		Joueur joueurEnCours;
 		while (!(this.pioche.piocheVide())) {
 			joueurEnCours = this.joueur.get(i);
+			System.out.println("");
+			System.out.println("tour du " + joueurEnCours);
+			System.out.println("");
 			joueurEnCours.tour(this, this.pioche);
 			
 			if(i==(nbrJoueur-1)) {
 				i=0;
+			}
+			else {
+				i++;
+			}
+		}
+		
+		i=0;
+		int j = 1;
+		while (this.modeAvance && j<3) {
+			joueurEnCours = this.joueur.get(i);
+			
+			System.out.println("");
+			System.out.println("tour du " + joueurEnCours);
+			System.out.println("");
+			
+			joueurEnCours.tour(this, this.pioche);
+			
+			if(i==(nbrJoueur-1)) {
+				i=0;
+				j++;
+			}
+			else {
+				i++;
+			}
+		}
+		
+		List<Carte> main;
+		
+		while (j<4) {
+			joueurEnCours = this.joueur.get(i);
+			main = joueurEnCours.getMain();
+			joueurEnCours.setCarteVictoire(main.get(0));
+			System.out.println("la carte victoire du " + joueurEnCours + " est " + main.get(0));
+			if(i==(nbrJoueur-1)) {
+				i=0;
+				j++;
 			}
 			else {
 				i++;
@@ -154,7 +193,12 @@ public class Partie implements ScoreInterface {
 	// Prend en entrée le plateau et en sortie donne un autre plateau de booleen avec où bougerCarte carte
 	// donne en sortie vraie si on peux bouger la carte
 	public Map<List<Integer>,Boolean> ouBougerCarte(List<Integer> position) {
-			return this.plateauBool = context.ouBougerCarte(this.plateau,position);
+		this.plateauBool = context.ouBougerCarte(this.plateau,position);
+		if (this.plateauBool.size()==0) {
+			plateauBool.put(position, true);
+		}
+		
+		return this.plateauBool;
 	}
 	
 	
@@ -218,7 +262,7 @@ public class Partie implements ScoreInterface {
 	public static void main(String[] args) {
 
 		Pioche pioche = new Pioche();
-		Partie partie = new Partie(Context.rectangle,false,pioche);
+		Partie partie = new Partie(Context.rectangle,true,pioche);
 		
 		partie.jouerPartie();
 		

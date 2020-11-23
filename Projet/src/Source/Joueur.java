@@ -2,6 +2,7 @@ package Source;
 
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Scanner;
 
@@ -11,6 +12,7 @@ public class Joueur implements ScoreInterface {
 	private int numeroJoueur;
 	private StratégieJoueur stratégie ;
 	private List<Carte> main;
+	private Pioche pioche;
 	// Private Partie;
 	
 	public Joueur(int strategie) { //TODO Juste pour pouvoir initialiser partie (A SUPPRIMER)
@@ -22,13 +24,17 @@ public class Joueur implements ScoreInterface {
 		this.numeroJoueur = numeroJoueur;
 		
 		this.stratégie = strategie;	
-		this.carteVictoire = pioche.piocherCarte();
-		this.main= new ArrayList();
+		this.pioche = pioche;
+		if (partie.modeAvance()==false) {
+			this.carteVictoire = pioche.piocherCarte();
+		}
+		
+		this.main= new ArrayList<Carte>();
 		
 		if (partie.modeAvance()) {
-			piocherCarte(pioche);
-			piocherCarte(pioche);
-			piocherCarte(pioche);
+			piocherCarte();
+			piocherCarte();
+			piocherCarte();
 		}
 		
 	}
@@ -37,19 +43,37 @@ public class Joueur implements ScoreInterface {
 		return this.main;
 	}
 	
-	public void piocherCarte(Pioche pioche) {
-		Carte carte = pioche.piocherCarte();
-		System.out.println("tu as pioché : " + carte);
-		
+	public void setCarteVictoire(Carte carteVictoire) {
+		this.carteVictoire = carteVictoire;
+	}
+	
+	public void piocherCarte() {
+		Carte carte = this.pioche.piocherCarte();
 		int i = stratégie.getDerniereCarte();
-		if (i != -1){
-			this.main.set(i,carte);
+		
+		if (carte != null) {
+			System.out.println("tu as pioché : " + carte);
+			if (i != -1){
+				this.main.set(i,carte);
+			}
+			else {
+				this.main.add(carte);
+			}
 		}
 		else {
-			this.main.add(carte);
+			this.main.set(i,null);
+			List<Carte> mainNew = new ArrayList<Carte>();
+			Iterator<Carte> it = this.main.iterator();
+			while (it.hasNext()) {
+				carte = it.next();
+				
+				if (carte != null) {
+					mainNew.add(carte);
+				}
+			}
+			this.main = mainNew;
+			
 		}
-		
-		
 	}
 	
 	public Carte consulterCarteVictoire() {
@@ -57,17 +81,19 @@ public class Joueur implements ScoreInterface {
 	}
 	
 	public void consulterCarteMain(Partie partie) {
+		System.out.println("");
+		System.out.print("tu as en main :");
 		
-		if (partie.modeAvance() == false) { // une seule carte à montrer
-			
-			System.out.print("tu as en main : " + this.main.get(0));
+		for (Carte carte : this.main) {
+			System.out.print(" " + carte);
 		}
-		else { // une à trois cartes
-			System.out.print("tu as en main :");
-			for (Carte carte : this.main) {
-				System.out.print(" " + carte);
-			}
-		}
+		
+		System.out.println("");
+		System.out.println("ta Carte victoire est : " + this.carteVictoire);
+	}
+	
+	public int tailleMain() {
+		return main.size();
 	}
 	
 	public boolean bougerCarteJoueur(List<Integer> positionCarte, List<Integer> positionFinale,Partie partie) {
@@ -75,7 +101,7 @@ public class Joueur implements ScoreInterface {
 	}
 	
 	public boolean placerCarteJoueur(Carte carte, List<Integer> position, Partie partie) {
-		return partie.ajouterCarte( position, carte);
+		return partie.ajouterCarte(position, carte);
 	}
 	
 	public void  regarderPlateau(Partie partie) {
@@ -84,11 +110,8 @@ public class Joueur implements ScoreInterface {
 	
 
 	public void tour(Partie partie,Pioche pioche) {
-		if (partie.modeAvance()==false) {
-			this.piocherCarte(pioche);
-		}
+
 		partie.ouAjouterCarte();
-		this.regarderPlateau(partie);
 		this.consulterCarteVictoire();
 		
 		stratégie.jouer(this,partie);
@@ -97,11 +120,13 @@ public class Joueur implements ScoreInterface {
 		this.regarderPlateau(partie);
 		
 		if (partie.modeAvance()==true) {
-			this.piocherCarte(pioche);
+			this.piocherCarte();
 		}		
 	}
 
-	
+	public String toString() {
+		return "joueur " + this.numeroJoueur;
+	}
 	// Visteur
 
 	@Override

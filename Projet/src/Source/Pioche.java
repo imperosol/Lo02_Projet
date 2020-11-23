@@ -31,7 +31,13 @@ public class Pioche {
 	}
 	
 	public Carte piocherCarte(){
-		return pioche.remove();
+		if (!(this.piocheVide())) {
+			return pioche.remove();
+		}
+		else {
+			return null;
+		}
+		
 	}
 	
 	public Boolean piocheVide() {

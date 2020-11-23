@@ -29,6 +29,7 @@ public class Score implements ScoreVisitor{
 			visit(joueurEnCours);
 			score = this.compterScore(i);
 			System.out.println("le score du joueur " + i + " est : " +score);
+			i++;
 		}
 	}
 	
@@ -136,65 +137,4 @@ public class Score implements ScoreVisitor{
 		this.plateau = partie.getPlateau();
 		this.joueur = partie.getJoueur();
 	}
-	
-	public static void main(String[] args) {
-		
-		
-		Partie partie = new Partie();
-		
-		Score score = new Score(partie);
-		Carte carte = new Carte(Couleur.rouge,Forme.carre,true);
-		Carte carte2 = new Carte(Couleur.vert,Forme.cercle,true);
-		
-		//Exemple fonctionnement du code Score
-		
-		// On ajoute une carte en (0,0)
-		List <Integer> position = new ArrayList<Integer>();
-		position.add(0,0);
-		position.add(1,0);
-		partie.ajouterCarte(position, carte);
-		partie.changerJoueur();
-		
-		// On ajoute une carte en (1,0)
-		position = new ArrayList<Integer>();
-		position.add(0,1);
-		position.add(1,0);
-		partie.ajouterCarte(position, carte);
-		partie.changerJoueur();
-	
-		// On ajoute une carte en (0,1)
-		position = new ArrayList<Integer>();
-		position.add(0,0);
-		position.add(1,1);
-		partie.ajouterCarte(position, carte);
-		partie.changerJoueur();
-		
-		// On ajoute une carte en (0,2)
-		position = new ArrayList<Integer>();
-		position.add(0,0);
-		position.add(1,2);
-		partie.ajouterCarte(position, carte);
-		partie.changerJoueur();
-		
-		
-		
-		// On ajoute une carte en (0,3)
-		position = new ArrayList<Integer>();
-		position.add(0,0);
-		position.add(1,3);
-		partie.ajouterCarte(position, carte);
-		partie.changerJoueur();
-		
-		// On ajoute une carte en (0,3)
-		position = new ArrayList<Integer>();
-		position.add(0,0);
-		position.add(1,4);
-		partie.ajouterCarte(position, carte);
-		partie.changerJoueur();
-		partie.afficherPlateau();
-		
-		System.out.println(score.compterScore(0));
-		
-	}
-
 }
