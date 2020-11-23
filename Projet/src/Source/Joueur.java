@@ -21,7 +21,7 @@ public class Joueur implements ScoreInterface {
 	
 	public Joueur(int numeroJoueur,  StratégieJoueur strategie, Partie partie, Pioche pioche) { 
 		// Rajouter partie, on en a besoin pour faire les méthodes
-		this.numeroJoueur = numeroJoueur;
+		this.numeroJoueur = numeroJoueur + 1 ;
 		
 		this.stratégie = strategie;	
 		this.pioche = pioche;
@@ -111,6 +111,11 @@ public class Joueur implements ScoreInterface {
 
 	public void tour(Partie partie,Pioche pioche) {
 
+		if (partie.modeAvance()==false) {
+			this.piocherCarte();
+		}
+		
+		
 		partie.ouAjouterCarte();
 		this.consulterCarteVictoire();
 		

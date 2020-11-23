@@ -20,10 +20,7 @@ public class JoueurReel implements StratégieJoueur{
 		
 		
 		
-		if (partie.modeAvance()==false) {
-			joueur.piocherCarte();
-		}
-		
+
 		joueur.consulterCarteMain(partie);
 		int action=-1;
 		Boolean aPlacerCarte=true;
@@ -93,7 +90,7 @@ public class JoueurReel implements StratégieJoueur{
 			action = this.entreeJoueur.nextInt();
 		} while(action > joueur.tailleMain()||action<=0);
 		
-		numCarteJouee = action;
+		numCarteJouee = action-1;
 		
 		Carte carte = (Carte) joueur.getMain().get(numCarteJouee);
 

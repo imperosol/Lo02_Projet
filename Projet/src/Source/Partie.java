@@ -100,6 +100,11 @@ public class Partie implements ScoreInterface {
 		}
 		
 		if (this.nbrJoueur == 3) {
+			do {
+				System.out.println("Joueur 3 IA ? (oui : 1, non : 0) ");
+				IA = clavier.nextInt();
+
+			}while(IA != 1 && IA != 0);
 			if (IA == 1) {
 				this.joueur.add(new Joueur(3,new IAAleatoire() , this, this.pioche));
 			}
@@ -150,7 +155,7 @@ public class Partie implements ScoreInterface {
 		
 		List<Carte> main;
 		
-		while (j<4) {
+		while (this.modeAvance && j<4) {
 			joueurEnCours = this.joueur.get(i);
 			main = joueurEnCours.getMain();
 			joueurEnCours.setCarteVictoire(main.get(0));
@@ -262,62 +267,8 @@ public class Partie implements ScoreInterface {
 	public static void main(String[] args) {
 
 		Pioche pioche = new Pioche();
-		Partie partie = new Partie(Context.rectangle,true,pioche);
+		Partie partie = new Partie(Context.rectangle,false,pioche);
 		
 		partie.jouerPartie();
-		
-		//Exemple fonctionnement du code partie avec plateau rectangle 
-		
-		/*
-		// On ajoute une carte en (0,0)
-		List <Integer> position = new ArrayList<Integer>();
-		position.add(0,0);
-		position.add(1,0);
-		partie.afficherPlateau();
-		partie.ajouterCarte(position, carte);
-		partie.changerJoueur();
-		partie.afficherPlateau();
-		
-		
-		// On ajoute une carte en (1,0)
-		position = new ArrayList<Integer>();
-		position.add(0,1);
-		position.add(1,0);
-		partie.ajouterCarte(position, carte);
-		partie.changerJoueur();
-		partie.afficherPlateau();
-		
-		// On ajoute une carte en (1,1)
-		position = new ArrayList<Integer>();
-		position.add(0,1);
-		position.add(1,1);
-		System.out.println(position.get(position.size()-1));
-		System.out.println(position.size());
-		Iterator<Integer> i=position.iterator();
-		while (i.hasNext()) {
-			System.out.println(i.next());
-		}
-		
-		System.out.println("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
-		partie.ajouterCarte(position, carte);
-		partie.changerJoueur();
-		partie.afficherPlateau();
-
-		System.out.println(partie.ouBougerCarte(position));
-		partie.afficherPlateau();
-		List <Integer> positionCarte = new ArrayList<Integer>();
-		positionCarte.add(0,0);
-		positionCarte.add(1,1);
-		System.out.println(position.size());
-		Iterator<Integer> it=position.iterator();
-		while (it.hasNext()) {
-			System.out.println(it.next());
-		}
-		
-		System.out.println("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
-		System.out.println(partie.bougerCarte(position,positionCarte));
-		partie.afficherPlateau();
-		
-	*/	
 	}
 }
