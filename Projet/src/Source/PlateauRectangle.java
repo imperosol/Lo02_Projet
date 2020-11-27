@@ -15,6 +15,7 @@ public class PlateauRectangle implements StrategyPlateau {
 	private Map<List<Integer>, Carte> plateau;
 	
 	@Override
+	// determine dynamiquement les bornes du plateau
 	public void getBorne(Map<List<Integer>, Carte> plateau) {
 		List<Integer> position;
 		
@@ -41,7 +42,8 @@ public class PlateauRectangle implements StrategyPlateau {
 			}
 			
 		}
-
+		
+		//incrémentation = différence entre borne maximale et minimale
 		int incrementation = 2 - this.borneLigne[1] + this.borneLigne[0];
 		this.borneLigne[0]-=incrementation;
 		this.borneLigne[1]+=incrementation;
@@ -154,6 +156,7 @@ public class PlateauRectangle implements StrategyPlateau {
 	}
 	
 	public Boolean carteBool(List<Integer> position) {
+		// Si dans les bornes
 		if (!(position.get(0) >= this.borneLigne[0])){
 			return false;
 		}
@@ -166,6 +169,7 @@ public class PlateauRectangle implements StrategyPlateau {
 		else if (!(position.get(1) <= this.borneColonne[1])){
 			return false;
 		}
+		//Si sur une case non occupée
 		else if (!(this.plateau.containsKey(position))){
 			return true;
 		}

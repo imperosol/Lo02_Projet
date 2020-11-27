@@ -16,6 +16,7 @@ public class Pioche {
 		Couleur[] couleur = {Couleur.vert,Couleur.rouge,Couleur.bleu};
 		Forme[] forme = {Forme.cercle,Forme.carre,Forme.triangle};
 		
+		//initialisation pioche
 		for (int i=0;i<3;i++) {
 			for (int j=0;j<3;j++) {
 				prePioche.add(new Carte(couleur[i],forme[j], true));
@@ -43,11 +44,5 @@ public class Pioche {
 	public Boolean piocheVide() {
 		return pioche.isEmpty();
 	}
-	//test
-	public static void main(String[] args) {
-		Pioche pioche = new Pioche();
-		for (int i=0;i<18;i++) {
-			System.out.println(pioche.piocherCarte());
-		}
-	}
+
 }

@@ -26,16 +26,17 @@ public class Partie implements ScoreInterface {
 	Pioche pioche;
 	
 	
-	public Partie(Context contextePlateau,Boolean modeAvance,Pioche pioche) {
+	public Partie(Context contextePlateau,Boolean modeAvance) {
 		
 		Scanner clavier = new Scanner(System.in);
+		
 		List<Integer> position;
 
 		
 		if (contextePlateau == Context.rectangle) {
 			this.context = new ContextPlateau(new PlateauRectangle());
 		}
-		else if (contextePlateau == Context.rectangle) {
+		else if (contextePlateau == Context.triangle) {
 			this.context = new ContextPlateau(new PlateauTriangle());
 		}
 		else {
@@ -46,18 +47,12 @@ public class Partie implements ScoreInterface {
 			this.context.initialiserPosition(position);
 			this.positionCarteVictoire = position;
 		}
-		
-		//initialisation position de la 1er carte en (0,0)
 
 		
 		//intialisation plateau booléen
-		this.context.getBorne(this.plateau);
-		position = new ArrayList<Integer>();
-		position.add(0);
-		position.add(0);
-		this.plateauBool.put(position, true);
 		
 		//initialisation pioche
+		Pioche pioche = new Pioche();
 		this.pioche = new Pioche();
 		this.carteCachee = this.pioche.piocherCarte();
 		
@@ -93,7 +88,7 @@ public class Partie implements ScoreInterface {
 			this.joueur.add(new Joueur(2,new JoueurReel() , this, this.pioche));
 		}
 		
-		
+		//initialisation joueur 3
 		do {
 			System.out.println("Rajouter un joueur 3 ? (oui : 1, non : 0) ");
 			IA = clavier.nextInt();
@@ -124,6 +119,7 @@ public class Partie implements ScoreInterface {
 	public void jouerPartie() {
 		int i=0;
 		Joueur joueurEnCours;
+		// tant que la pioche n'est pas vide,on joue la partie
 		while (!(this.pioche.piocheVide())) {
 			joueurEnCours = this.joueur.get(i);
 			System.out.println("");
@@ -139,9 +135,10 @@ public class Partie implements ScoreInterface {
 			}
 		}
 		
+		// Si en mode avancé permet de jouer deux tours de plus une fois que la pioche est vide
 		i=0;
 		int j = 1;
-		while (this.modeAvance && j<3) {
+		while (this.modeAvance && j<3) { 
 			joueurEnCours = this.joueur.get(i);
 			
 			System.out.println("");
@@ -161,6 +158,7 @@ public class Partie implements ScoreInterface {
 		
 		List<Carte> main;
 		
+		// Si en mode avancé détermine la carte victoire de chaque joueurs
 		while (this.modeAvance && j<4) {
 			joueurEnCours = this.joueur.get(i);
 			main = joueurEnCours.getMain();
@@ -190,7 +188,7 @@ public class Partie implements ScoreInterface {
 		
 		this.plateauBool = context.ouAjouterCarte(this.plateau);
 		
-		// Si 1er tour
+		// Si 1er tour (aucunes cartes sur le plateau), initialisation du plateau booléen en 0
 		if (this.plateauBool.size()==0) {
 			List<Integer> position = new ArrayList<Integer>();
 			position.add(0);
@@ -256,37 +254,7 @@ public class Partie implements ScoreInterface {
 		return this.plateau;
 	}
 	
-	public List<Map<List<Integer>,Carte>> getPlateauListe() {
-		List<Map<List<Integer>,Carte>> plateauListe = new ArrayList<Map<List<Integer>,Carte>>();
-		Map<List<Integer>,Carte> plateauNew;
-		Carte carteVictoire;
-		
-		
-		if (positionCarteVictoire != null) {
-			
-			Iterator<Joueur> it = joueur.iterator();
-			while (it.hasNext()) {
-				plateauNew = new HashMap<List<Integer>,Carte>();
-				carteVictoire = it.next().consulterCarteVictoire();
-				
-				plateauNew = this.plateau;
-				
-				System.out.println("plop");
-				this.context.afficherPlateau(plateauNew, this.plateauBool);
-				plateauListe.add(plateauNew);
-				
-			}
-		}
-		else {
 
-			Iterator<Joueur> it = joueur.iterator();
-			while (it.hasNext()) {
-				plateauListe.add(plateau);
-			}
-		}
-		return plateauListe;
-	}
-	
 	public List<Joueur> getJoueur() {
 		return this.joueur;
 	}
@@ -305,8 +273,17 @@ public class Partie implements ScoreInterface {
 	//test
 	public static void main(String[] args) {
 
-		Pioche pioche = new Pioche();
-		Partie partie = new Partie(Context.variante,true,pioche);
+		
+		/* Partie(Context,modeAvance)
+		 * 
+		 * Context permet de déterminer le type de plateau, on a :
+		 * - Context.rectangle pour le plateau rectangle
+		 * - Context.triangle pour le plateau triangle
+		 * - Context.variante pour le plateau variante (dans ce plateau deviendra la carte victoire du joueur à la fin de la partie)
+		 * 
+		 * si modeAvance = true alors on est en mode anavcé, sinon on est en mode normal
+		 */
+		Partie partie = new Partie(Context.rectangle,false);
 		
 		partie.jouerPartie();
 	}

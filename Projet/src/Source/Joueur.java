@@ -4,20 +4,16 @@ package Source;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Scanner;
 
 public class Joueur implements ScoreInterface {
 	
 	private Carte carteVictoire;
 	private int numeroJoueur;
-	private StratégieJoueur stratégie ;
+	private StratégieJoueur stratégie ; // pour pattern stratégie
 	private List<Carte> main;
 	private Pioche pioche;
-
-	// Private Partie;
 	
 	public Joueur(int numeroJoueur,  StratégieJoueur strategie, Partie partie, Pioche pioche) { 
-		// Rajouter partie, on en a besoin pour faire les méthodes
 		this.numeroJoueur = numeroJoueur;
 		
 		this.stratégie = strategie;	
@@ -44,6 +40,9 @@ public class Joueur implements ScoreInterface {
 		this.carteVictoire = carteVictoire;
 	}
 	
+	/* la méthode piocherCarte permet aussi de supprimer la carte utilisé
+	 * Elle réduit la taille de la main quand la pioche est vide
+	 */
 	public void piocherCarte() {
 		Carte carte = this.pioche.piocherCarte();
 		int i = stratégie.getDerniereCarte();
@@ -81,6 +80,8 @@ public class Joueur implements ScoreInterface {
 		return this.carteVictoire;
 	}
 	
+	
+	//affiche la main du joueur
 	public void consulterCarteMain(Partie partie) {
 		System.out.println("");
 		System.out.print("tu as en main :");

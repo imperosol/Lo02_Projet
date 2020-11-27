@@ -77,10 +77,11 @@ public class JoueurReel implements StratégieJoueur{
 		}
 	}
 	
+	
 	public void placerCarte() {
 		int action;
 		int i = 1;
-		Iterator it = joueur.getMain().iterator();
+		Iterator<Carte> it = joueur.getMain().iterator();
 		while (it.hasNext()) {
 			System.out.print(i + ": " + it.next() +"  ");
 			i++;

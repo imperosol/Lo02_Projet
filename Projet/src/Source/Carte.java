@@ -40,6 +40,9 @@ public class Carte {
 			return "formes vides";
 		}
 	}
+	
+	//renvoi les initiaux de la couleur puis de la forme puis de Vide ou plein
+	//utilisé dans l'affichage de plateau
 	public String toString() {
 		if (this.plein) {
 			return this.couleur.getAbreviation() + this.forme.getAbreviation() + "P";
@@ -47,11 +50,6 @@ public class Carte {
 		else {
 			return this.couleur.getAbreviation() + this.forme.getAbreviation() + "V";
 		}
-	}
-	
-	public static void main(String[] args) {
-		Carte carte = new Carte(Couleur.vert,Forme.cercle, true);
-		System.out.println(carte);
 	}
 }
 

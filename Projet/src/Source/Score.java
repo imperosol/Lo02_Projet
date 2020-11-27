@@ -105,6 +105,7 @@ public class Score implements ScoreVisitor{
 					}	
 				}
 			}
+			//fin de ligne ou colonne
 			if (incCouleur>2) {
 				score += incCouleur + 1;
 				System.out.println(this.affScore(pos, i, incCouleur, carteVictoire.affCouleur(), incCouleur + 1));

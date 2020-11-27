@@ -11,6 +11,7 @@ public class PlateauVariante implements StrategyPlateau {
 	private Map<List<Integer>, Carte> plateau;
 	
 	private List<Integer> positionCarteVictoire;
+	//borne de chaque ligne
 	int[][] borne = { {-1,0}, {-2,1}, {-2,1} , {-2,1} , {-1,0}};
 			
 	@Override
@@ -50,6 +51,9 @@ public class PlateauVariante implements StrategyPlateau {
 
 	@Override
 	public Map<List<Integer>, Boolean> ouBougerCarte(Map<List<Integer>, Carte> plateau, List<Integer> positionCarte) {
+		/* On enleve puis remet la carte a bouger du plateau
+		 * On execute la méthode pour savoir où ajouter une carte sur le plateau modifié		
+		 */ 
 		this.plateauBool = new HashMap<List<Integer>,Boolean>();
 		this.plateau= plateau;
 		Carte carteABouger = plateau.get(positionCarte);
@@ -205,6 +209,7 @@ public class PlateauVariante implements StrategyPlateau {
 		int posY = position.get(0) + 2;
 		int posX = position.get(1);
 		
+		// Si dans les bornes
 		if (posY > 4){
 			return false;
 		}
@@ -217,6 +222,7 @@ public class PlateauVariante implements StrategyPlateau {
 		else if (posX < this.borne[posY][0]){
 			return false;
 		}
+		//Si sur une case non occupée
 		else if (position.equals(this.positionCarteVictoire)) {
 			return false;
 		}

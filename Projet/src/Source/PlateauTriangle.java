@@ -10,6 +10,7 @@ public class PlateauTriangle implements StrategyPlateau {
 	private Map<List<Integer>, Boolean> plateauBool;
 	private Map<List<Integer>, Carte> plateau;
 	
+	//borne de chaque ligne
 	int[][] borne = {  {-3,3} , {-2,2} , {-1,1}};
 			
 	@Override
@@ -152,6 +153,7 @@ public class PlateauTriangle implements StrategyPlateau {
 		int posY = position.get(0);
 		int posX = position.get(1);
 		
+		// Si dans les bornes
 		if (posY > 2){
 			return false;
 		}
@@ -164,6 +166,7 @@ public class PlateauTriangle implements StrategyPlateau {
 		else if (posX < this.borne[posY][0]){
 			return false;
 		}
+		//Si sur une case non occupée
 		else if (!(this.plateau.containsKey(position))){
 			return true;
 		}
