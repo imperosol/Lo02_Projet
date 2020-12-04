@@ -23,7 +23,7 @@ public class Partie implements ScoreInterface {
 	private Carte carteCachee; // Stock carte cachée
 	private List<Integer> positionCarteVictoire = null;
 	
-	Pioche pioche;
+	private Pioche pioche;
 	
 	
 	public Partie(Context contextePlateau,Boolean modeAvance) {
@@ -115,6 +115,7 @@ public class Partie implements ScoreInterface {
 		}
 	}
 
+	// public void tour(Joueur joueur)
 	
 	public void jouerPartie() {
 		int i=0;
@@ -127,12 +128,7 @@ public class Partie implements ScoreInterface {
 			System.out.println("");
 			joueurEnCours.tour(this, this.pioche);
 			
-			if(i==(nbrJoueur-1)) {
-				i=0;
-			}
-			else {
-				i++;
-			}
+			i = (i + 1) % nbrJoueur; // passage au joueur suivant
 		}
 		
 		// Si en mode avancé permet de jouer deux tours de plus une fois que la pioche est vide
@@ -174,7 +170,6 @@ public class Partie implements ScoreInterface {
 		}
 		
 		Score score = new Score(this);
-	
 	}
 	
 	public void ajouterJoueur(Joueur joueur) {
@@ -262,13 +257,14 @@ public class Partie implements ScoreInterface {
 	public List<Integer> getPositionCarteVictoire(){
 		return this.positionCarteVictoire;
 	}
+	
 	//visiteur
+	
 	@Override
 	public void accept(ScoreVisitor visitor) {
 		 visitor.visit(this);
 	}
-	
-	
+		
 	
 	//test
 	public static void main(String[] args) {
