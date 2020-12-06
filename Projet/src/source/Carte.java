@@ -1,4 +1,4 @@
-package Source;
+package source;
 
 public class Carte {
 
@@ -11,6 +11,8 @@ public class Carte {
 		this.forme = forme;
 		this.plein = plein;
 	}
+	
+	/*getters*/
 	
 	public int getCouleur() {
 		return couleur.ordinal();
@@ -33,23 +35,13 @@ public class Carte {
 	}
 	
 	public String affPlein() {
-		if (this.plein) {
-			return "formes pleines";
-		}
-		else {
-			return "formes vides";
-		}
+	    return !(this.plein) ? "formes pleines" : "formes vides";
 	}
 	
-	//renvoi les initiaux de la couleur puis de la forme puis de Vide ou plein
-	//utilisé dans l'affichage de plateau
+	/*affiche les initiaux de la couleur puis de la forme puis de vide ou plein*/
 	public String toString() {
-		if (this.plein) {
-			return this.couleur.getAbreviation() + this.forme.getAbreviation() + "P";
-		}
-		else {
-			return this.couleur.getAbreviation() + this.forme.getAbreviation() + "V";
-		}
+	    String cartePleine = !(this.plein) ? "P" : "V";
+	    return this.couleur.getAbreviation() + this.forme.getAbreviation() + cartePleine;
 	}
 }
 

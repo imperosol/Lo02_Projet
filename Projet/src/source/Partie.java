@@ -1,4 +1,4 @@
-package Source;
+package source;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -40,11 +40,10 @@ public class Partie implements ScoreInterface {
 			this.context = new ContextPlateau(new PlateauTriangle());
 		}
 		else {
-			this.context = new ContextPlateau(new PlateauVariante());
 			position = new ArrayList<Integer>();
 			position.add(-1);
 			position.add(0);
-			this.context.initialiserPosition(position);
+			this.context = new ContextPlateau(new PlateauVariante(position));
 			this.positionCarteVictoire = position;
 		}
 
@@ -58,132 +57,82 @@ public class Partie implements ScoreInterface {
 		
 		//initialisation joueurs
 		this.modeAvance = modeAvance;
-		
-		
-		int IA;
 		this.joueur = new ArrayList<Joueur>();
 		
-		do {
-			System.out.println("Joueur 1 IA ? (oui : 1, non : 0) ");
-			IA = clavier.nextInt();
-		}while(IA != 1 && IA != 0);
-
-		if (IA == 1) {
-			this.joueur.add(new Joueur(1,new IAAleatoire() , this, this.pioche));
-		}
-		else {
-			this.joueur.add(new Joueur(1,new JoueurReel() , this, this.pioche));
-		}
-
-		//initalisation joueur 2
-		do {
-			System.out.println("Joueur 2 IA ? (oui : 1, non : 0) ");
-			IA = clavier.nextInt();
-
-		}while(IA != 1 && IA != 0);
-		if (IA == 1) {
-			this.joueur.add(new Joueur(2,new IAAleatoire() , this, this.pioche));
-		}
-		else {
-			this.joueur.add(new Joueur(2,new JoueurReel() , this, this.pioche));
-		}
-		
-		//initialisation joueur 3
-		do {
-			System.out.println("Rajouter un joueur 3 ? (oui : 1, non : 0) ");
-			IA = clavier.nextInt();
-		}while(IA != 1 && IA != 0);
-		if (IA == 1) {
-			this.nbrJoueur = 3;
-		}
-		else {
-			this.nbrJoueur = 2;
-		}
-		
-		if (this.nbrJoueur == 3) {
-			do {
-				System.out.println("Joueur 3 IA ? (oui : 1, non : 0) ");
-				IA = clavier.nextInt();
-
-			}while(IA != 1 && IA != 0);
-			if (IA == 1) {
-				this.joueur.add(new Joueur(3,new IAAleatoire() , this, this.pioche));
-			}
-			else {
-				this.joueur.add(new Joueur(3,new JoueurReel() , this, this.pioche));
-			}
+		int IA;
+		/*Demande du nombre de joueurs*/
+		do
+		{
+		    System.out.println("Nombre de joueurs ? (2 ou 3) ");
+		    this.nbrJoueur = clavier.nextInt();
+		}while (this.nbrJoueur!=2 && this.nbrJoueur!=3);
+		        
+		/*Initialisation des joueurs*/
+		for (int i=0; i<this.nbrJoueur; i++)
+		{
+		    /*On demande à l'utilisateur s'il veut ajouter une IA ou un joueur humain*/
+		    do {
+		        System.out.println("Joueur" + (i+1) + "IA ? (oui : 1, non : 0) ");
+		        IA = clavier.nextInt();
+		    }while(IA != 1 && IA != 0);
+		            
+		    /*On crée un joueur humain ou IA selon le choix utilisateur*/
+		    if (IA==1) {
+		        this.joueur.add(new Joueur(i,new IAAleatoire() , this, this.pioche));
+		    }
+		    else {
+		        this.joueur.add(new Joueur(i,new JoueurReel() , this, this.pioche));
+		    }
 		}
 	}
-
-	// public void tour(Joueur joueur)
+	
 	
 	public void jouerPartie() {
-		int i=0;
-		Joueur joueurEnCours;
-		// tant que la pioche n'est pas vide,on joue la partie
-		while (!(this.pioche.piocheVide())) {
-			joueurEnCours = this.joueur.get(i);
-			System.out.println("");
-			System.out.println("tour du " + joueurEnCours);
-			System.out.println("");
-			joueurEnCours.tour(this, this.pioche);
-			
-			i = (i + 1) % nbrJoueur; // passage au joueur suivant
-		}
-		
-		// Si en mode avancé permet de jouer deux tours de plus une fois que la pioche est vide
-		i=0;
-		int j = 1;
-		while (this.modeAvance && j<3) { 
-			joueurEnCours = this.joueur.get(i);
-			
-			System.out.println("");
-			System.out.println("tour du " + joueurEnCours);
-			System.out.println("");
-			
-			joueurEnCours.tour(this, this.pioche);
-			
-			if(i==(nbrJoueur-1)) {
-				i=0;
-				j++;
-			}
-			else {
-				i++;
-			}
-		}
-		
-		List<Carte> main;
-		
-		// Si en mode avancé détermine la carte victoire de chaque joueurs
-		while (this.modeAvance && j<4) {
-			joueurEnCours = this.joueur.get(i);
-			main = joueurEnCours.getMain();
-			joueurEnCours.setCarteVictoire(main.get(0));
-			System.out.println("la carte victoire du " + joueurEnCours + " est " + main.get(0));
-			if(i==(nbrJoueur-1)) {
-				i=0;
-				j++;
-			}
-			else {
-				i++;
-			}
-		}
-		
-		Score score = new Score(this);
+	    int i=0; int j;
+	    Joueur joueurEnCours;
+	    // tant que la pioche n'est pas vide,on joue la partie
+	    while (!(this.pioche.piocheVide())) {
+	        joueurEnCours = this.joueur.get(i);
+	        tour(joueurEnCours);
+	        i = (i + 1) % nbrJoueur; // passage au joueur suivant
+	    }
+	                
+	    /*Si on est en mode avancé, on réalise en plus les opérations suivantes*/
+	    if (this.modeAvance) {
+	    	List<Carte> main;
+	        /*On ajoute deux cartes en plus pour chaque joueur*/
+	        for (j = 0; j<2; j++){
+	            for (i = 0; i<nbrJoueur; i++){
+	                joueurEnCours = this.joueur.get(i);
+	                tour(joueurEnCours);
+	            }
+	        }
+	        /*Quand tous les joueurs ont reçu leurs cartes supplémentaires, on détermine la carte victoire de chaque joueur*/
+	        for (i = 0; i<nbrJoueur; i++){
+	            joueurEnCours = this.joueur.get(i);
+	            main = joueurEnCours.getMain();
+	            joueurEnCours.setCarteVictoire(main.get(0));
+	            System.out.println("la carte victoire du " + joueurEnCours + " est " + main.get(0));
+	        }
+	    }
+	    Score score = new Score(this);
 	}
 	
-	public void ajouterJoueur(Joueur joueur) {
-		this.joueur.add(joueur);
+	
+	public void tour(Joueur joueur) {
+        System.out.println("\ntour du " + joueur + "\n");
+        joueur.tour();
 	}
+
 	
-	//Ses 2 méthodes seront écrite via un pattern strategy
+	/*Méthodes du plateau via un pattern strategy*/
 	
-	// Prend en entrée le plateau et en sortie donne un autre plateau de booleen avec où rajouter carte
+	/* renvoie plateau avec les positions où on peut rajouter des cartes */
 	public Map<List<Integer>,Boolean> ouAjouterCarte() {
 		
 		this.plateauBool = context.ouAjouterCarte(this.plateau);
 		
-		// Si 1er tour (aucunes cartes sur le plateau), initialisation du plateau booléen en 0
+		/* Aucune carte sur le plateau, on initialise la position en (0,0) */
 		if (this.plateauBool.size()==0) {
 			List<Integer> position = new ArrayList<Integer>();
 			position.add(0);
@@ -194,8 +143,7 @@ public class Partie implements ScoreInterface {
 		return this.plateauBool;
 	}
 	
-	// Prend en entrée le plateau et en sortie donne un autre plateau de booleen avec où bougerCarte carte
-	// donne en sortie vraie si on peux bouger la carte
+	/* renvoie plateau avec les positions où on peut bouger la carte en position */
 	public Map<List<Integer>,Boolean> ouBougerCarte(List<Integer> position) {
 		this.plateauBool = context.ouBougerCarte(this.plateau,position);
 		if (this.plateauBool.size()==0) {
@@ -205,23 +153,26 @@ public class Partie implements ScoreInterface {
 		return this.plateauBool;
 	}
 	
-	
-	
+	/* permet d'ajouter une carte sur plateau
+	 * retourne vrai si la carte a été ajoutée */
 	public Boolean ajouterCarte(List<Integer> position, Carte carte) {
 		
 		if (this.plateauBool.containsKey(position)) {
-			this.plateau.put(position,carte); // rajout de carte dans plateau
-			return true; // retourne que la care a été ajoutée
+			this.plateau.put(position,carte);
+			return true;
 		}
 		else {
 			System.out.println("impossible de rajouter la carte ici");
-			return false; // retourne que la carte n'a pas été ajoutée
+			return false;
 		}
 	}
 	
+	
+	/* permet de bouger une carte sur plateau
+	 * retourne vrai si la carte a été bougée */
 	public Boolean bougerCarte(List<Integer> positionCarte, List<Integer> positionFinale) {
 		
-		if (this.plateauBool.containsKey(positionFinale)==false) { //On ne peux pas bouger la carte sur cette case
+		if (this.plateauBool.containsKey(positionFinale)==false) {
 			System.out.println("la carte ne peux pas être bougée ici");
 			return false;
 		}
@@ -240,8 +191,9 @@ public class Partie implements ScoreInterface {
 		context.afficherPlateau(this.plateau, this.plateauBool);
 	}
 	
+	/*getters*/
 	
-	public boolean modeAvance() { // joueur a besoin de savoir si on est en mode avancé
+	public boolean getModeAvance() {
 		return this.modeAvance;
 	}
 	
@@ -258,15 +210,13 @@ public class Partie implements ScoreInterface {
 		return this.positionCarteVictoire;
 	}
 	
-	//visiteur
+	/*visiteur*/
 	
 	@Override
 	public void accept(ScoreVisitor visitor) {
 		 visitor.visit(this);
 	}
 		
-	
-	//test
 	public static void main(String[] args) {
 
 		
@@ -279,7 +229,7 @@ public class Partie implements ScoreInterface {
 		 * 
 		 * si modeAvance = true alors on est en mode anavcé, sinon on est en mode normal
 		 */
-		Partie partie = new Partie(Context.rectangle,false);
+		Partie partie = new Partie(Context.triangle,false);
 		
 		partie.jouerPartie();
 	}

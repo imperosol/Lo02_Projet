@@ -1,24 +1,66 @@
-package Source;
+package source;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class PlateauTriangle implements StrategyPlateau {
+public class PlateauRectangle implements StrategyPlateau {
+	
+	private int[] borneLigne = new int[2];
+	private int[] borneColonne = new int[2];
+	
 	
 	private Map<List<Integer>, Boolean> plateauBool;
 	private Map<List<Integer>, Carte> plateau;
 	
-	//borne de chaque ligne
-	int[][] borne = {  {-3,3} , {-2,2} , {-1,1}};
+	// determine dynamiquement les bornes du plateau
+	public void getBorne(Map<List<Integer>, Carte> plateau) {
+		List<Integer> position;
+		
+		this.borneLigne = new int[2];
+		this.borneColonne = new int[2];
+		
+		
+		for (Map.Entry<List<Integer>, Carte> mapEntry : plateau.entrySet()) {
 			
+			position = mapEntry.getKey();
+			// recherche position max/min
+			if (position.get(0) < this.borneLigne[0]) {
+				this.borneLigne[0] = position.get(0);
+			}
+			else if (position.get(0) > this.borneLigne[1]) {
+				this.borneLigne[1] = position.get(0);
+			}
+			
+			if (position.get(1) < this.borneColonne[0]) {
+				this.borneColonne[0] = position.get(1);
+			}
+			else if (position.get(1) > this.borneColonne[1]) {
+				this.borneColonne[1] = position.get(1);
+			}
+			
+		}
+		
+		//incrémentation = différence entre borne maximale et minimale
+		int incrementation = 2 - this.borneLigne[1] + this.borneLigne[0];
+		this.borneLigne[0]-=incrementation;
+		this.borneLigne[1]+=incrementation;
+		
+		incrementation = 4 - this.borneColonne[1] + this.borneColonne[0];
+		this.borneColonne[0]-=incrementation;
+		this.borneColonne[1]+=incrementation;	
+	}
+	
 	@Override
 	public Map<List<Integer>, Boolean> ouAjouterCarte(Map<List<Integer>, Carte> plateau) {
+		
 		this.plateauBool = new HashMap<List<Integer>,Boolean>();
 		this.plateau= plateau;
-	
-		/* On teste toutes les cases adjacentes aux cartes
+		
+		// 1) trouver bornes colonnes/ligne
+		getBorne(plateau);
+		/* 2) On teste toutes les cases adjacentes aux cartes
 		 * Pour chaque cases :
 		 * On vérifie qu'il n'y a pas de carte sur cette case
 		 * On vérifie que la case soit à 'interieur des bornes
@@ -50,6 +92,7 @@ public class PlateauTriangle implements StrategyPlateau {
 
 	@Override
 	public Map<List<Integer>, Boolean> ouBougerCarte(Map<List<Integer>, Carte> plateau, List<Integer> positionCarte) {
+		
 		this.plateauBool = new HashMap<List<Integer>,Boolean>();
 		this.plateau= plateau;
 		Carte carteABouger = plateau.get(positionCarte);
@@ -59,18 +102,20 @@ public class PlateauTriangle implements StrategyPlateau {
 		this.plateau.put(positionCarte,carteABouger);
 		this.plateauBool.remove(positionCarte);
 		
-		return plateauBool;
-	}
+		return this.plateauBool;
+	
+	}	
+				
+
 
 	@Override
 	public void afficherPlateau(Map<List<Integer>, Carte> plateau, Map<List<Integer>, Boolean> plateauBool) {
-		
 		List<Integer> position = new ArrayList<Integer>();
 		position.add(0,0);
 		position.add(1,0);
 		System.out.println("");
-		System.out.print("    ");
-		for (int i=-3;i<=3;i++) {
+		System.out.print("     ");
+		for (int i=borneColonne[0];i<=borneColonne[1];i++) {
 			if (i>=0) {
 				System.out.print(i + "    ");
 			}
@@ -79,91 +124,48 @@ public class PlateauTriangle implements StrategyPlateau {
 			}
 		}
 		
-		System.out.println(" ");
-		
-		// ligne 3
-		System.out.print(2 + " ");
-		System.out.print("     ");
-		System.out.print("     ");
-		
-		for (int j=-1;j<=1;j++) {
-			position.set(0,2);
-			position.set(1,j);
-			if(plateau.containsKey(position)) {
-				System.out.print(" " + plateau.get(position) + " ");
-			}
-			else if(plateauBool.containsKey(position)) {
-				System.out.print(" -+- ");
+		for (int i=this.borneLigne[1];i>=this.borneLigne[0];i--) {
+			System.out.println(" ");
+			
+			if (i>=0) {
+				System.out.print(i + "  ");
 			}
 			else {
-				System.out.print(" --- ");
+				System.out.print(i + " ");
 			}
-		}
-		System.out.println(""); // Retour chariot
-		
-		// ligne 2
-		System.out.print(1 + " ");
-		System.out.print("     ");
-		
-		for (int j=-2;j<=2;j++) {
-			position.set(0,1);
-			position.set(1,j);
-			if(plateau.containsKey(position)) {
-				System.out.print(" " + plateau.get(position) + " ");
-			}
-			else if(plateauBool.containsKey(position)) {
-				System.out.print(" -+- ");
-			}
-			else {
-				System.out.print(" --- ");
-			}
-		}
-		System.out.println(""); // Retour chariot
-		
-		// ligne 1
-		System.out.print(0 + " ");
-		
-		for (int j=-3;j<=3;j++) {
-			position.set(0,0);
-			position.set(1,j);
-			if(plateau.containsKey(position)) {
-				System.out.print(" " + plateau.get(position) + " ");
-			}
-			else if(plateauBool.containsKey(position)) {
-				System.out.print(" -+- ");
-			}
-			else {
-				System.out.print(" --- ");
+			
+			
+			for (int j=borneColonne[0];j<=borneColonne[1];j++) {
+				position.set(0,i);
+				position.set(1,j);
+				if(plateau.containsKey(position)) {
+					System.out.print(" " + plateau.get(position) + " ");
+				}
+				else if(plateauBool.containsKey(position)) {
+					System.out.print(" -+- ");
+				}
+				else {
+					System.out.print(" --- ");
+				}
 			}
 		}
 		
-		
-		
 		System.out.println(""); // Retour chariot
+		
 	}
-		
 	
-
-	@Override
-	public void getBorne(Map<List<Integer>, Carte> plateau) {
-		
-	}
-
 	public Boolean carteBool(List<Integer> position) {
-		int posY = position.get(0);
-		int posX = position.get(1);
-		
 		// Si dans les bornes
-		if (posY > 2){
+		if (!(position.get(0) >= this.borneLigne[0])){
 			return false;
 		}
-		else if (posY < 0){
+		else if (!(position.get(0) <= this.borneLigne[1])){
 			return false;
 		}
-		else if (posX > this.borne[posY][1]){
+		else if (!(position.get(1) >= this.borneColonne[0])){
 			return false;
 		}
-		else if (posX < this.borne[posY][0]){
+		else if (!(position.get(1) <= this.borneColonne[1])){
 			return false;
 		}
 		//Si sur une case non occupée
@@ -174,11 +176,4 @@ public class PlateauTriangle implements StrategyPlateau {
 			return false;
 		}
 	}
-
-	@Override
-	public void initialiserPosition(List<Integer> position) {
-		// TODO Auto-generated method stub
-		
-	}
 }
-

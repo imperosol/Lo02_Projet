@@ -1,4 +1,4 @@
-package Source;
+package source;
 
 public enum Couleur {
 	vert("V"),rouge("R"),bleu("B");

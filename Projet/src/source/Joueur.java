@@ -1,4 +1,4 @@
-package Source;
+package source;
 
 
 import java.util.ArrayList;
@@ -12,19 +12,21 @@ public class Joueur implements ScoreInterface {
 	private StratégieJoueur stratégie ; // pour pattern stratégie
 	private List<Carte> main;
 	private Pioche pioche;
+	private Partie partie;
 	
 	public Joueur(int numeroJoueur,  StratégieJoueur strategie, Partie partie, Pioche pioche) { 
 		this.numeroJoueur = numeroJoueur;
 		
 		this.stratégie = strategie;	
 		this.pioche = pioche;
-		if (partie.modeAvance()==false) {
+		this.partie = partie;
+		if (partie.getModeAvance()==false) {
 			this.carteVictoire = pioche.piocherCarte();
 		}
 		
 		this.main= new ArrayList<Carte>();
 		
-		if (partie.modeAvance()) {
+		if (partie.getModeAvance()) {
 			piocherCarte();
 			piocherCarte();
 			piocherCarte();
@@ -33,12 +35,13 @@ public class Joueur implements ScoreInterface {
 	}
 	
 	public List<Carte> getMain() {
-		return this.main;
+		return main;
 	}
 	
 	public void setCarteVictoire(Carte carteVictoire) {
 		this.carteVictoire = carteVictoire;
 	}
+	
 	
 	/* la méthode piocherCarte permet aussi de supprimer la carte utilisé
 	 * Elle réduit la taille de la main quand la pioche est vide
@@ -60,7 +63,6 @@ public class Joueur implements ScoreInterface {
 			}
 		}
 		else {
-			
 			this.main.set(i,null);
 			List<Carte> mainNew = new ArrayList<Carte>();
 			Iterator<Carte> it = this.main.iterator();
@@ -72,69 +74,61 @@ public class Joueur implements ScoreInterface {
 				}
 			}
 			this.main = mainNew;
-			
 		}
 	}
 	
-	public Carte consulterCarteVictoire() {
+	
+	public Carte getCarteVictoire() {
 		return this.carteVictoire;
 	}
 	
 	
-	//affiche la main du joueur
-	public void consulterCarteMain(Partie partie) {
-		System.out.println("");
-		System.out.print("tu as en main :");
+	/* affiche la main du joueur */
+	public void affCarteMain() {
+		System.out.print("\ntu as en main :");
 		
 		for (Carte carte : this.main) {
 			System.out.print(" " + carte);
 		}
-		
-		System.out.println("");
-		System.out.println("ta Carte victoire est : " + this.carteVictoire);
+		System.out.println("\nta Carte victoire est : " + this.carteVictoire);
 	}
 	
 	public int tailleMain() {
 		return main.size();
 	}
 	
-	public boolean bougerCarteJoueur(List<Integer> positionCarte, List<Integer> positionFinale,Partie partie) {
+	public boolean bougerCarteJoueur(List<Integer> positionCarte, List<Integer> positionFinale) {
 		return partie.bougerCarte(positionCarte, positionFinale);
 	}
 	
-	public boolean placerCarteJoueur(Carte carte, List<Integer> position, Partie partie) {
+	public boolean placerCarteJoueur(Carte carte, List<Integer> position) {
 		return partie.ajouterCarte(position, carte);
 	}
 	
-	public void  regarderPlateau(Partie partie) {
+	public void  affPlateau() {
 		partie.afficherPlateau();
 	}
 	
 
-	public void tour(Partie partie,Pioche pioche) {
-
-		if (partie.modeAvance()==false) {
-			this.piocherCarte();
+	public void tour() {
+		if (partie.getModeAvance()==false) {
+			piocherCarte();
 		}
-		
-		
-		partie.ouAjouterCarte();
-		this.consulterCarteVictoire();
-		
-		stratégie.jouer(this,partie);
 	
+		partie.ouAjouterCarte();
+		stratégie.jouer(this,partie);
+		affPlateau();
 		
-		this.regarderPlateau(partie);
-		
-		if (partie.modeAvance()==true) {
-			this.piocherCarte();
+		if (partie.getModeAvance()==true) {
+			piocherCarte();
 		}		
 	}
 
 	public String toString() {
 		return "joueur " + this.numeroJoueur;
 	}
-	// Visteur
+	
+	/* Visteur */
 
 	@Override
 	public void accept(ScoreVisitor visitor) {

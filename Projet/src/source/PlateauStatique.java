@@ -1,67 +1,48 @@
-package Source;
+package source;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class PlateauRectangle implements StrategyPlateau {
-	
-	private int[] borneLigne = new int[2];
-	private int[] borneColonne = new int[2];
-	
+public class PlateauStatique {
 	
 	private Map<List<Integer>, Boolean> plateauBool;
 	private Map<List<Integer>, Carte> plateau;
+	private int[][] borne;
+	private int borneMin;
+	private int borneMax;
+	private int colMin;
+	private int colMax;
+	private List<Integer> positionCarteVictoire;
 	
-	@Override
-	// determine dynamiquement les bornes du plateau
-	public void getBorne(Map<List<Integer>, Carte> plateau) {
-		List<Integer> position;
+	public PlateauStatique(int[][] borne, int borneMin,int borneMax, List<Integer> positionCarteVictoire) {
+		this.borne = borne;
+		this.positionCarteVictoire = positionCarteVictoire;
+		this.borneMin = borneMin;
+		this.borneMax = borneMax;
 		
-		this.borneLigne = new int[2];
-		this.borneColonne = new int[2];
-		
-		
-		for (Map.Entry<List<Integer>, Carte> mapEntry : plateau.entrySet()) {
-			
-			position = mapEntry.getKey();
-			// recherche position max/min
-			if (position.get(0) < this.borneLigne[0]) {
-				this.borneLigne[0] = position.get(0);
+		/* determine les colonnes min et max */
+		colMin = 0;
+		colMax = 0;
+		for (int i=0;i<=borneMax-borneMin;i++) {
+			if (borne[i][0]<colMin) {
+				colMin = borne[i][0];
 			}
-			else if (position.get(0) > this.borneLigne[1]) {
-				this.borneLigne[1] = position.get(0);
+			if (borne[i][1]>colMax) {
+				colMax = borne[i][1];
 			}
-			
-			if (position.get(1) < this.borneColonne[0]) {
-				this.borneColonne[0] = position.get(1);
-			}
-			else if (position.get(1) > this.borneColonne[1]) {
-				this.borneColonne[1] = position.get(1);
-			}
-			
 		}
+		System.out.println("col min = " + colMin);
+		System.out.println("col max = " + colMax);
 		
-		//incrémentation = différence entre borne maximale et minimale
-		int incrementation = 2 - this.borneLigne[1] + this.borneLigne[0];
-		this.borneLigne[0]-=incrementation;
-		this.borneLigne[1]+=incrementation;
-		
-		incrementation = 4 - this.borneColonne[1] + this.borneColonne[0];
-		this.borneColonne[0]-=incrementation;
-		this.borneColonne[1]+=incrementation;	
 	}
 	
-	@Override
 	public Map<List<Integer>, Boolean> ouAjouterCarte(Map<List<Integer>, Carte> plateau) {
-		
 		this.plateauBool = new HashMap<List<Integer>,Boolean>();
 		this.plateau= plateau;
-		
-		// 1) trouver bornes colonnes/ligne
-		getBorne(plateau);
-		/* 2) On teste toutes les cases adjacentes aux cartes
+	
+		/* On teste toutes les cases adjacentes aux cartes
 		 * Pour chaque cases :
 		 * On vérifie qu'il n'y a pas de carte sur cette case
 		 * On vérifie que la case soit à 'interieur des bornes
@@ -91,9 +72,10 @@ public class PlateauRectangle implements StrategyPlateau {
 		return this.plateauBool;
 	}
 
-	@Override
 	public Map<List<Integer>, Boolean> ouBougerCarte(Map<List<Integer>, Carte> plateau, List<Integer> positionCarte) {
-		
+		/* On enleve puis remet la carte a bouger du plateau
+		 * On execute la méthode pour savoir où ajouter une carte sur le plateau modifié		
+		 */ 
 		this.plateauBool = new HashMap<List<Integer>,Boolean>();
 		this.plateau= plateau;
 		Carte carteABouger = plateau.get(positionCarte);
@@ -103,20 +85,18 @@ public class PlateauRectangle implements StrategyPlateau {
 		this.plateau.put(positionCarte,carteABouger);
 		this.plateauBool.remove(positionCarte);
 		
-		return this.plateauBool;
-	
-	}	
-				
+		return plateauBool;
+	}
 
-
-	@Override
 	public void afficherPlateau(Map<List<Integer>, Carte> plateau, Map<List<Integer>, Boolean> plateauBool) {
 		List<Integer> position = new ArrayList<Integer>();
 		position.add(0,0);
 		position.add(1,0);
+		
+		int ipos;
 		System.out.println("");
-		System.out.print("     ");
-		for (int i=borneColonne[0];i<=borneColonne[1];i++) {
+		System.out.print("    ");
+		for (int i=colMin;i<=colMax;i++) {
 			if (i>=0) {
 				System.out.print(i + "    ");
 			}
@@ -125,19 +105,21 @@ public class PlateauRectangle implements StrategyPlateau {
 			}
 		}
 		
-		for (int i=this.borneLigne[1];i>=this.borneLigne[0];i--) {
-			System.out.println(" ");
-			
-			if (i>=0) {
-				System.out.print(i + "  ");
+		for (int i = borneMax-borneMin;i>=0;i--) {
+			ipos = i + borneMin;
+			if (i + borneMin<0) {
+				System.out.print("\n" + ipos + " ");
 			}
 			else {
-				System.out.print(i + " ");
+				System.out.print("\n" + ipos + "  ");
 			}
 			
+			for (int j =colMin;j<borne[i][0];j++) {
+				System.out.print("     ");
+			}
 			
-			for (int j=borneColonne[0];j<=borneColonne[1];j++) {
-				position.set(0,i);
+			for (int j=borne[i][0];j<=borne[i][1];j++) {
+				position.set(0,ipos);
 				position.set(1,j);
 				if(plateau.containsKey(position)) {
 					System.out.print(" " + plateau.get(position) + " ");
@@ -145,42 +127,64 @@ public class PlateauRectangle implements StrategyPlateau {
 				else if(plateauBool.containsKey(position)) {
 					System.out.print(" -+- ");
 				}
+				else if (positionCarteVictoire != null) {
+					if (position.equals(this.positionCarteVictoire)) {
+						System.out.print(" -?- ");
+					}
+					else {
+						System.out.print(" --- ");
+					}
+				}
 				else {
 					System.out.print(" --- ");
 				}
 			}
 		}
-		
 		System.out.println(""); // Retour chariot
-		
+	}
+	
+	public void initialiserPosition(List<Integer> position) {
+		positionCarteVictoire = new ArrayList<Integer>();
+		this.positionCarteVictoire = position;
 	}
 	
 	public Boolean carteBool(List<Integer> position) {
+		int posY = position.get(0) - borneMin;
+		int posX = position.get(1);
+		
 		// Si dans les bornes
-		if (!(position.get(0) >= this.borneLigne[0])){
+		if (posY > (borneMax - borneMin)){
 			return false;
 		}
-		else if (!(position.get(0) <= this.borneLigne[1])){
+		else if (posY < 0){
 			return false;
 		}
-		else if (!(position.get(1) >= this.borneColonne[0])){
+		else if (posX > this.borne[posY][1]){
 			return false;
 		}
-		else if (!(position.get(1) <= this.borneColonne[1])){
+		else if (posX < this.borne[posY][0]){
 			return false;
 		}
 		//Si sur une case non occupée
+		
+		
 		else if (!(this.plateau.containsKey(position))){
-			return true;
+			if(this.positionCarteVictoire != null) {
+				if (position.equals(this.positionCarteVictoire)) {
+					return false;
+				}
+				else {
+					return true;
+				}
+			}
+			else {
+				return true;
+			}
 		}
 		else {
 			return false;
 		}
 	}
 
-	@Override
-	public void initialiserPosition(List<Integer> position) {
-		// TODO Auto-generated method stub
-		
-	}
 }
+

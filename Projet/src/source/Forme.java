@@ -1,4 +1,4 @@
-package Source;
+package source;
 
 public enum Forme {
 	triangle("T"),carre("C"),cercle("o");

@@ -1,4 +1,4 @@
-package Source;
+package source;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -146,7 +146,7 @@ public class Score implements ScoreVisitor{
 	//Visiteur
 	@Override
 	public void visit(Joueur joueur) {
-		this.carteVictoire.add(joueur.consulterCarteVictoire());
+		this.carteVictoire.add(joueur.getCarteVictoire());
 	}
 	
 	@Override

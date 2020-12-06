@@ -1,4 +1,4 @@
-package Source;
+package source;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -21,7 +21,7 @@ public class JoueurReel implements StratégieJoueur{
 		
 		
 
-		joueur.consulterCarteMain(partie);
+		joueur.getCarteVictoire();
 		int action=-1;
 		Boolean aPlacerCarte=true;
 		Boolean aBougerCarte=true;
@@ -115,7 +115,7 @@ public class JoueurReel implements StratégieJoueur{
 		List<Integer> position =  (List<Integer>) listeDeCléLibre.toArray()[action-1];
 		
 		
-		joueur.placerCarteJoueur(carte, position, partie);
+		joueur.placerCarteJoueur(carte, position);
 	}
 	
 	
@@ -157,7 +157,7 @@ public class JoueurReel implements StratégieJoueur{
 		} while(action > listeDeCléUtilisé.length||action<=0);
 
 		List<Integer> positionFinale =  (List<Integer>) CléEmplacementValide.toArray()[action-1];
-		joueur.bougerCarteJoueur(CléCarteADeplacer, positionFinale, partie);
+		joueur.bougerCarteJoueur(CléCarteADeplacer, positionFinale);
 	}
 	
 	@Override

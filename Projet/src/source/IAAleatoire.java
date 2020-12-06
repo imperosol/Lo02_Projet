@@ -1,4 +1,4 @@
-package Source;
+package source;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -28,7 +28,7 @@ public class IAAleatoire implements StratégieJoueur{
 			Carte carte = (Carte) joueur.getMain().get(numCarteJouee);
 			List<Integer> place =  (List<Integer>) ListeDeCléLibre.toArray()[random.nextInt(ListeDeCléLibre.size())];
 			
-			joueur.placerCarteJoueur(carte,place, partie);
+			joueur.placerCarteJoueur(carte,place);
 			
 		}
 		if (Aleatoire==1) {
@@ -40,9 +40,9 @@ public class IAAleatoire implements StratégieJoueur{
 			List<Integer> place =  (List<Integer>) ListeDeCléLibre.toArray()[random.nextInt(ListeDeCléLibre.size())];
 			
 			
-			joueur.placerCarteJoueur(carte,place, partie);
+			joueur.placerCarteJoueur(carte,place);
 			
-			joueur.regarderPlateau(partie);
+			joueur.affPlateau();
 			
 
 			Map<List<Integer>,Carte> plateau = partie.getPlateau();
@@ -51,7 +51,7 @@ public class IAAleatoire implements StratégieJoueur{
 			Map<List<Integer>,Boolean> EmplacementValide = partie.ouBougerCarte(CléCarteADeplacer);
 			Set<List<Integer>> CléEmplacementValide = EmplacementValide.keySet();
 			List<Integer> positionFinale =  (List<Integer>) CléEmplacementValide.toArray()[random.nextInt(CléEmplacementValide.size())];
-			joueur.bougerCarteJoueur(CléCarteADeplacer, positionFinale, partie);
+			joueur.bougerCarteJoueur(CléCarteADeplacer, positionFinale);
 
 
 
@@ -65,7 +65,7 @@ public class IAAleatoire implements StratégieJoueur{
 				positionCarte.add((int)random.nextInt(),(int)random.nextInt());
 				positionFinale.add((int)random.nextInt(),(int)random.nextInt());
 
-				joueur.bougerCarteJoueur(positionCarte, positionFinale, partie);
+				joueur.bougerCarteJoueur(positionCarte, positionFinale);
 			}			
 			
 			
@@ -78,7 +78,7 @@ public class IAAleatoire implements StratégieJoueur{
 			
 			
 			
-			joueur.placerCarteJoueur(carte,place, partie);
+			joueur.placerCarteJoueur(carte,place);
 			
 
 		}

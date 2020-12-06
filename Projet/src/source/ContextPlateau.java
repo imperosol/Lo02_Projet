@@ -1,4 +1,4 @@
-package Source;
+package source;
 
 import java.util.List;
 import java.util.Map;
@@ -8,10 +8,6 @@ public class ContextPlateau {
 
 	   public ContextPlateau(StrategyPlateau strategy){
 	      this.strategy = strategy;
-	   }
-	   
-	   public void getBorne(Map<List<Integer>, Carte> plateau) {
-		   strategy.getBorne(plateau);
 	   }
 
 	   public Map<List<Integer>, Boolean> ouAjouterCarte(Map<List<Integer>, Carte> plateau){
