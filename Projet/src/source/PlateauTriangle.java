@@ -1,11 +1,10 @@
 package source;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class PlateauTriangle extends PlateauStatique implements StrategyPlateau  {
+
 	private static final int[][] BORNE = {{-3,3} , {-2,2} , {-1,1}};
 			
 	public PlateauTriangle() {
