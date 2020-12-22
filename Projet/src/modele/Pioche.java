@@ -1,7 +1,6 @@
-package source;
+package modele;
 
 import java.util.Queue;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;

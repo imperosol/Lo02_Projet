@@ -1,7 +1,9 @@
-package source;
+package modele.plateau;
 
 import java.util.List;
 import java.util.Map;
+
+import modele.Carte;
 
 public class PlateauTriangle extends PlateauStatique implements StrategyPlateau  {
 

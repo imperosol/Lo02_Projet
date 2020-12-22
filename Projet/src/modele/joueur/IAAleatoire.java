@@ -1,4 +1,4 @@
-package source;
+package modele.joueur;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -8,7 +8,10 @@ import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 
-public class IAAleatoire implements StratégieJoueur{
+import modele.Carte;
+import modele.Partie;
+
+public class IAAleatoire implements StratégyJoueur{
 	
 	int numCarteJouee = -1;
 	

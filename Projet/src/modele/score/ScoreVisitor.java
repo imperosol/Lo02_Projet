@@ -1,4 +1,7 @@
-package source;
+package modele.score;
+
+import modele.Partie;
+import modele.joueur.Joueur;
 
 public interface ScoreVisitor {
 	

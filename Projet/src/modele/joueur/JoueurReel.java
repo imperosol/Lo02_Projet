@@ -1,4 +1,4 @@
-package source;
+package modele.joueur;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -7,7 +7,10 @@ import java.util.Map;
 import java.util.Scanner;
 import java.util.Set;
 
-public class JoueurReel implements StratégieJoueur{
+import modele.Carte;
+import modele.Partie;
+
+public class JoueurReel implements StratégyJoueur{
 	
 	int numCarteJouee = -1;
 	Joueur joueur;

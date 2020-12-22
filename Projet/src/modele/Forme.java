@@ -1,4 +1,4 @@
-package source;
+package modele;
 
 public enum Forme {
 	triangle("T"),carre("C"),cercle("o");

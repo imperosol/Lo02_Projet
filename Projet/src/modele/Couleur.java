@@ -1,4 +1,4 @@
-package source;
+package modele;
 
 public enum Couleur {
 	vert("V"),rouge("R"),bleu("B");

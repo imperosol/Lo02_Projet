@@ -1,7 +1,9 @@
-package source;
+package modele.plateau;
 
 import java.util.List;
 import java.util.Map;
+
+import modele.Carte;
 
 public interface StrategyPlateau {
 	public Map<List<Integer>, Boolean> ouAjouterCarte(Map<List<Integer>,Carte> plateau);

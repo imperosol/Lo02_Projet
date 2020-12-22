@@ -1,20 +1,30 @@
-package source;
+package modele;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-
+import java.util.Observable;
 import java.util.Scanner;
 
-public class Partie implements ScoreInterface {
+import modele.joueur.IAAleatoire;
+import modele.joueur.Joueur;
+import modele.joueur.JoueurReel;
+import modele.plateau.*;
+import modele.score.Score;
+import modele.score.ScoreInterface;
+import modele.score.ScoreVisitor;
+
+@SuppressWarnings("deprecation")
+public class Partie extends Observable implements ScoreInterface {
 	// pattern stratégie pour forme plateau
 	private Map<List<Integer>,Carte> plateau = new HashMap<List<Integer>,Carte>(); // plateau de jeu qui lie position et carte
 	private Map<List<Integer>,Boolean> plateauBool = new HashMap<List<Integer>,Boolean>(); // plateau contenant les posititons ou on peut mettre des cartes
 
 	// Joueurs de la partie
 	private List<Joueur> joueur;
+	private Joueur joueurEnCours;
 	
 	private ContextPlateau context; // Stock stratégie utilisée
 	
@@ -22,17 +32,17 @@ public class Partie implements ScoreInterface {
 	private boolean modeAvance;
 	private Carte carteCachee; // Stock carte cachée
 	private List<Integer> positionCarteVictoire = null;
+	private Boolean fin;
 	
 	private Pioche pioche;
 	
 	
-	public Partie(Context contextePlateau,Boolean modeAvance) {
-		
-		Scanner clavier = new Scanner(System.in);
+	public Partie(Context contextePlateau,Boolean modeAvance,Boolean joueur3, List<Boolean> IA) {
+
 		
 		List<Integer> position;
 
-		
+		//initialistation plateau
 		if (contextePlateau == Context.rectangle) {
 			this.context = new ContextPlateau(new PlateauRectangle());
 		}
@@ -47,11 +57,7 @@ public class Partie implements ScoreInterface {
 			this.positionCarteVictoire = position;
 		}
 
-		
-		//intialisation plateau booléen
-		
 		//initialisation pioche
-		Pioche pioche = new Pioche();
 		this.pioche = new Pioche();
 		this.carteCachee = this.pioche.piocherCarte();
 		
@@ -59,33 +65,59 @@ public class Partie implements ScoreInterface {
 		this.modeAvance = modeAvance;
 		this.joueur = new ArrayList<Joueur>();
 		
-		int IA;
-		/*Demande du nombre de joueurs*/
-		do
-		{
-		    System.out.println("Nombre de joueurs ? (2 ou 3) ");
-		    this.nbrJoueur = clavier.nextInt();
-		}while (this.nbrJoueur!=2 && this.nbrJoueur!=3);
-		        
-		/*Initialisation des joueurs*/
-		for (int i=0; i<this.nbrJoueur; i++)
-		{
-		    /*On demande à l'utilisateur s'il veut ajouter une IA ou un joueur humain*/
-		    do {
-		        System.out.println("Joueur" + (i+1) + "IA ? (oui : 1, non : 0) ");
-		        IA = clavier.nextInt();
-		    }while(IA != 1 && IA != 0);
-		            
-		    /*On crée un joueur humain ou IA selon le choix utilisateur*/
-		    if (IA==1) {
-		        this.joueur.add(new Joueur(i,new IAAleatoire() , this, this.pioche));
-		    }
-		    else {
-		        this.joueur.add(new Joueur(i,new JoueurReel() , this, this.pioche));
-		    }
+		int nbJoueur = (joueur3) ? 3 : 2;
+		
+		for (int i=0;i<nbJoueur;i++) {
+			if (IA.get(i)) {
+				this.joueur.add(new Joueur(i+1,new IAAleatoire() , this, this.pioche)); 
+			}
+			else {
+				this.joueur.add(new Joueur(i+1,new JoueurReel() , this, this.pioche));
+			}
 		}
+		fin = false;
+		joueurEnCours = joueur.get(0);
 	}
 	
+	// public Partie(fichier Sauvegarde)
+	
+	
+	public void nouveauTour() {
+		if (!(pioche.piocheVide())) {
+			//joueurEnCours.tour();
+		}
+		else if (modeAvance){
+			if (joueurEnCours.tailleMain()>1) {
+				//joueurEnCours.tour();
+			}
+			else {
+				determinerCarteVictoire();
+				fin = true;
+			}
+		}
+		else {
+			fin = true;
+		}
+		
+		setChanged();
+		notifyObservers();
+	}
+	
+	public void ChangerJoueur() {
+		//permet de passer au joueur suivant
+		int numJoueur = joueurEnCours.getNumJoueur();
+		numJoueur = numJoueur%3;
+		joueurEnCours = joueur.get(numJoueur);
+	}
+	
+	public void determinerCarteVictoire() {
+        for (int i = 0; i<nbrJoueur; i++){
+            Joueur joueurEnCours = this.joueur.get(i);
+            List<Carte> main = joueurEnCours.getMain();
+            joueurEnCours.setCarteVictoire(main.get(0));
+            System.out.println("la carte victoire du " + joueurEnCours + " est " + main.get(0));
+        }
+	}
 	
 	public void jouerPartie() {
 	    int i=0; int j;
@@ -108,12 +140,7 @@ public class Partie implements ScoreInterface {
 	            }
 	        }
 	        /*Quand tous les joueurs ont reçu leurs cartes supplémentaires, on détermine la carte victoire de chaque joueur*/
-	        for (i = 0; i<nbrJoueur; i++){
-	            joueurEnCours = this.joueur.get(i);
-	            main = joueurEnCours.getMain();
-	            joueurEnCours.setCarteVictoire(main.get(0));
-	            System.out.println("la carte victoire du " + joueurEnCours + " est " + main.get(0));
-	        }
+	        determinerCarteVictoire();
 	    }
 	    Score score = new Score(this);
 	}
@@ -155,26 +182,26 @@ public class Partie implements ScoreInterface {
 	
 	/* permet d'ajouter une carte sur plateau
 	 * retourne vrai si la carte a été ajoutée */
-	public Boolean ajouterCarte(List<Integer> position, Carte carte) {
+	public void ajouterCarte(List<Integer> position, Carte carte) {
 		
 		if (this.plateauBool.containsKey(position)) {
 			this.plateau.put(position,carte);
-			return true;
 		}
 		else {
 			System.out.println("impossible de rajouter la carte ici");
-			return false;
 		}
+		
+		setChanged();
+		notifyObservers();
 	}
 	
 	
 	/* permet de bouger une carte sur plateau
 	 * retourne vrai si la carte a été bougée */
-	public Boolean bougerCarte(List<Integer> positionCarte, List<Integer> positionFinale) {
+	public void bougerCarte(List<Integer> positionCarte, List<Integer> positionFinale) {
 		
 		if (this.plateauBool.containsKey(positionFinale)==false) {
 			System.out.println("la carte ne peux pas être bougée ici");
-			return false;
 		}
 		else {
 			Carte carteABouger = this.plateau.get(positionCarte);
@@ -182,8 +209,10 @@ public class Partie implements ScoreInterface {
 			this.plateau.put(positionFinale,carteABouger); 
 
 			ouAjouterCarte();
-			return true;
 		}
+		
+		setChanged();
+		notifyObservers();
 	}
 	
 	
@@ -191,24 +220,41 @@ public class Partie implements ScoreInterface {
 		context.afficherPlateau(this.plateau, this.plateauBool);
 	}
 	
+	
 	/*getters*/
 	
 	public boolean getModeAvance() {
-		return this.modeAvance;
+		return modeAvance;
 	}
 	
 	public Map<List<Integer>,Carte> getPlateau() {
-		return this.plateau;
+		return plateau;
 	}
 	
+	public Map<List<Integer>,Boolean> getPlateauBool() {
+		return plateauBool;
+	}
+	
+	public int getLargeurPlateau() {
+		return 0;
+	}
+	
+	public int getLongueurPlateau() {
+		return 0;
+	}
 
 	public List<Joueur> getJoueur() {
-		return this.joueur;
+		return joueur;
+	}
+	
+	public Joueur getJoueurEnCours() {
+		return joueurEnCours;
 	}
 	
 	public List<Integer> getPositionCarteVictoire(){
 		return this.positionCarteVictoire;
 	}
+	
 	
 	/*visiteur*/
 	
@@ -229,7 +275,11 @@ public class Partie implements ScoreInterface {
 		 * 
 		 * si modeAvance = true alors on est en mode anavcé, sinon on est en mode normal
 		 */
-		Partie partie = new Partie(Context.triangle,false);
+		
+		List<Boolean> IAJoueur = new ArrayList<Boolean>();
+		IAJoueur.add(false);		IAJoueur.add(false);;
+		
+		Partie partie = new Partie(Context.triangle,false,false,IAJoueur);
 		
 		partie.jouerPartie();
 	}

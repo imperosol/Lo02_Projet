@@ -1,9 +1,11 @@
-package source;
+package modele.plateau;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import modele.Carte;
 
 public class PlateauVariante extends PlateauStatique implements StrategyPlateau {
 	private static final int[][] BORNE = { {-1,0}, {-2,1}, {-2,1} , {-2,1} , {-1,0}};

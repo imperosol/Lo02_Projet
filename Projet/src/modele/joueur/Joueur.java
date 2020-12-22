@@ -1,20 +1,26 @@
-package source;
+package modele.joueur;
 
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import modele.Carte;
+import modele.Partie;
+import modele.Pioche;
+import modele.score.ScoreInterface;
+import modele.score.ScoreVisitor;
+
 public class Joueur implements ScoreInterface {
 	
 	private Carte carteVictoire;
 	private int numeroJoueur;
-	private StratégieJoueur stratégie ; // pour pattern stratégie
+	private StratégyJoueur stratégie ; // pour pattern stratégie
 	private List<Carte> main;
 	private Pioche pioche;
 	private Partie partie;
 	
-	public Joueur(int numeroJoueur,  StratégieJoueur strategie, Partie partie, Pioche pioche) { 
+	public Joueur(int numeroJoueur,  StratégyJoueur strategie, Partie partie, Pioche pioche) { 
 		this.numeroJoueur = numeroJoueur;
 		
 		this.stratégie = strategie;	
@@ -97,12 +103,12 @@ public class Joueur implements ScoreInterface {
 		return main.size();
 	}
 	
-	public boolean bougerCarteJoueur(List<Integer> positionCarte, List<Integer> positionFinale) {
-		return partie.bougerCarte(positionCarte, positionFinale);
+	public void bougerCarteJoueur(List<Integer> positionCarte, List<Integer> positionFinale) {
+		partie.bougerCarte(positionCarte, positionFinale);
 	}
 	
-	public boolean placerCarteJoueur(Carte carte, List<Integer> position) {
-		return partie.ajouterCarte(position, carte);
+	public void placerCarteJoueur(Carte carte, List<Integer> position) {
+		partie.ajouterCarte(position, carte);
 	}
 	
 	public void  affPlateau() {
@@ -122,6 +128,10 @@ public class Joueur implements ScoreInterface {
 		if (partie.getModeAvance()==true) {
 			piocherCarte();
 		}		
+	}
+	
+	public int getNumJoueur() {
+		return numeroJoueur;
 	}
 
 	public String toString() {
