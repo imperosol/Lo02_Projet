@@ -259,11 +259,6 @@ public class InterfaceJeu implements ActionListener,Observer{
 	
 	public void resetMain () {
 		labelMain.removeAll();
-		
-		
-		
-		
-		
 		List<Carte> main = partie.getJoueurEnCours().getMain();
 		
 		labelMain.setLayout(new GridLayout(1, main.size(), 0, 0));
