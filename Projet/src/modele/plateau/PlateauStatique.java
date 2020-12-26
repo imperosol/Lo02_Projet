@@ -187,6 +187,22 @@ public class PlateauStatique {
 			return false;
 		}
 	}
+	
+	public int getLongueur() {
+		return colMax -  colMin + 1;
+	}
+	
+	public int getLongueurMin() {
+		return colMin;
+	}
+	
+	public int getLargeur() {
+		return borneMax - borneMin + 1;
+	}
+
+	public int getLargeurMin() {
+		return borneMin;
+	}
 
 }
 

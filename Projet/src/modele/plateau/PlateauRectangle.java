@@ -178,4 +178,27 @@ public class PlateauRectangle implements StrategyPlateau {
 			return false;
 		}
 	}
+
+	@Override
+	public int getLongueur() {
+		// TODO Auto-generated method stub
+		return borneColonne[1]-borneColonne[0]+1;
+	}
+
+	@Override
+	public int getLargeur() {
+		// TODO Auto-generated method stub
+		return borneLigne[1]-borneLigne[0]+1;
+	}
+
+	@Override
+	public int getLongueurMin() {
+		return borneColonne[0];
+	}
+
+	@Override
+	public int getLargeurMin() {
+		// TODO Auto-generated method stub
+		return borneLigne[0];
+	}
 }

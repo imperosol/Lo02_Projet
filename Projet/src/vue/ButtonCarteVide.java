@@ -12,5 +12,9 @@ public class ButtonCarteVide extends ButtonCarte{
 		super();
 		this.position = position;		
 	}
+	
+	public List<Integer> getPosition(){
+		return position;
+	}
 
 }

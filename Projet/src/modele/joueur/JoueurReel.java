@@ -12,10 +12,11 @@ import modele.Partie;
 
 public class JoueurReel implements StratégyJoueur{
 	
-	int numCarteJouee = -1;
-	Joueur joueur;
-	Partie partie;
-	Scanner entreeJoueur = new Scanner(System.in);
+	private int numCarteJouee = -1;
+	private Joueur joueur;
+	private Partie partie;
+	
+	private Scanner entreeJoueur = new Scanner(System.in);
 	
 	public void jouer(Joueur joueur,Partie partie) {
 		this.joueur=joueur;

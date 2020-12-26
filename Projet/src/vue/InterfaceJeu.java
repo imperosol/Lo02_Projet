@@ -32,6 +32,9 @@ import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import javax.swing.SwingConstants;
+import javax.swing.border.Border;
+import javax.swing.border.EtchedBorder;
+import javax.swing.JLabel;
 
 @SuppressWarnings("deprecation")
 public class InterfaceJeu implements ActionListener,Observer{
@@ -42,9 +45,33 @@ public class InterfaceJeu implements ActionListener,Observer{
 	private JPanel labelJoueur;
 	private JPanel labelPlateau;
 	private JFrame frame;
+	private List<ButtonCarteVide> listeButtonVide = new ArrayList<ButtonCarteVide>();
 	private List<ButtonCarte> selection = new ArrayList<ButtonCarte>();
+	
+	
+	
+	//Si on utilise le plateau variante, contient la position de la carte victoire
+	private List<Integer> positionCarteVictoire;
+	
+	
+	private List<Integer> positionCarte;
+	
+	//Panel pour la main, la carte victoire, bouton de fin de tour
+	private JPanel panelJoueur;
+	
+	//Bouton de fin de tour
 	private JButton finTour;
+	
+	//panel pour les cartes en main
 	private JPanel labelMain;
+	private List<JPanel> listPanelMain;
+	
+	//panel et label pour la crate victoire
+	private JPanel jPCVictoire;
+	private JLabel jLCVictoire;
+	
+	//panel vide
+	private JLabel jLBlankMain;
 
 	/**
 	 * Launch the application.
@@ -79,96 +106,129 @@ public class InterfaceJeu implements ActionListener,Observer{
 		IAJoueur.add(false);
 		IAJoueur.add(false);;
 		
-		partie = new Partie(Context.triangle,false,false,IAJoueur);
+		//Création parite + ajout observeurs
 		
+		partie = new Partie(Context.rectangle,false,false,IAJoueur);
+		partie.addObserver(this);
+		
+		positionCarteVictoire = partie.getPositionCarteVictoire();
+		
+		List<Joueur> joueur = partie.getJoueur();
+		Iterator<Joueur> it = joueur.iterator();
+		while(it.hasNext()) {
+			it.next().addObserver(this);
+		}
+		
+		/*
+		 * création fenêtre
+		 */
 		frame = new JFrame();
-		frame.setBounds(100, 100, 886, 690);
+		frame.setBounds(100, 100, 1000, 700);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
 		labelJoueur = new JPanel();
-		frame.getContentPane().add(labelJoueur, BorderLayout.NORTH);
+		frame.getContentPane().add(labelJoueur, BorderLayout.SOUTH);
 		labelJoueur.setLayout(new BorderLayout(0, 0));
 		
-		finTour = new JButton("Fin tour");
-		finTour.setHorizontalAlignment(SwingConstants.LEFT);
-		finTour.addActionListener(this);
-		labelJoueur.add(finTour, BorderLayout.EAST);
 		
+		/*
+		 * création panel pour la main
+		 */
 		labelMain = new JPanel();
 		labelJoueur.add(labelMain, BorderLayout.CENTER);
 		GridBagLayout gridMain = new GridBagLayout();
 		gridMain.columnWidths = new int[]{0};
 		gridMain.rowHeights = new int[]{0};
-		gridMain.columnWeights = new double[]{Double.MIN_VALUE};
-		gridMain.rowWeights = new double[]{Double.MIN_VALUE};
+		gridMain.columnWeights = new double[]{};
+		gridMain.rowWeights = new double[]{};
 		labelMain.setLayout(gridMain);
 		
 		labelPlateau = new JPanel();
 		frame.getContentPane().add(labelPlateau, BorderLayout.WEST);
-		labelPlateau.setLayout(new GridLayout(3, 7, 0, 0));
 		
 		controleur = new Controleur(partie);
 		
+		panelJoueur = new JPanel();
+		frame.getContentPane().add(panelJoueur, BorderLayout.NORTH);
+		GridBagLayout gbl_panelJoueur = new GridBagLayout();
+		gbl_panelJoueur.rowWeights = new double[]{0.0};
+		gbl_panelJoueur.columnWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
+		panelJoueur.setLayout(gbl_panelJoueur);
 		
-		/*
-	
-		BufferedImage buttonIcon = ImageIO.read(new File("./images/carte.png"));
-		buttonIcon.getScaledInstance( 100, 200,  java.awt.Image.SCALE_SMOOTH ) ;
-		ImageIcon imageIcon2 = new ImageIcon(getScaledInstance(buttonIcon,100,200,RenderingHints.VALUE_INTERPOLATION_BICUBIC,true));
+		finTour = new JButton("Fin tour");
+		finTour.addActionListener(this);
+		finTour.setHorizontalAlignment(SwingConstants.RIGHT);
+		GridBagConstraints gbc_finTour = new GridBagConstraints();
+		gbc_finTour.insets = new Insets(0, 0, 5, 0);
+		gbc_finTour.gridx = 7;
+		gbc_finTour.gridy = 0;
+		panelJoueur.add(finTour, gbc_finTour);
 		
-		JButton button = new JButton(imageIcon2);
+		JPanel jPC1 = new JPanel();
+		GridBagConstraints gbc_carte1 = new GridBagConstraints();
+		gbc_carte1.insets = new Insets(0, 0, 5, 5);
+		gbc_carte1.fill = GridBagConstraints.HORIZONTAL;
+		gbc_carte1.gridx = 4;
+		gbc_carte1.gridy = 0;
+		panelJoueur.add(jPC1, gbc_carte1);
 		
+		JPanel jPC2 = new JPanel();
+		GridBagConstraints gbc_carte2 = new GridBagConstraints();
+		gbc_carte2.insets = new Insets(0, 0, 5, 5);
+		gbc_carte2.fill = GridBagConstraints.HORIZONTAL;
+		gbc_carte2.gridx = 6;
+		gbc_carte2.gridy = 0;
+		panelJoueur.add(jPC2, gbc_carte2);
 		
+		JPanel jPC3 = new JPanel();
+		GridBagConstraints gbc_carte3 = new GridBagConstraints();
+		gbc_carte3.insets = new Insets(0, 0, 5, 0);
+		gbc_carte3.fill = GridBagConstraints.HORIZONTAL;
+		gbc_carte3.gridx = 5;
+		gbc_carte3.gridy = 0;
+		panelJoueur.add(jPC3, gbc_carte3);
 		
+		listPanelMain = new ArrayList<JPanel>();
+		listPanelMain.add(jPC1);
+		listPanelMain.add(jPC2);
+		listPanelMain.add(jPC3);
 		
-		button.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				System.out.print("PLOP");
-			}
-		});
+		jPCVictoire = new JPanel();
+		GridBagConstraints gbc_carteVictoire = new GridBagConstraints();
+		gbc_carteVictoire.insets = new Insets(0, 0, 5, 5);
+		gbc_carteVictoire.fill = GridBagConstraints.WEST;
+		gbc_carteVictoire.gridx = 1;
+		gbc_carteVictoire.gridy = 0;
+		panelJoueur.add(jPCVictoire, gbc_carteVictoire);
 		
-
+		jLCVictoire = new JLabel("Carte Victoire");
+		GridBagConstraints gbc_lblNewLabel = new GridBagConstraints();
+		gbc_lblNewLabel.insets = new Insets(0, 0, 5, 5);
+		gbc_lblNewLabel.gridx = 0;
+		gbc_lblNewLabel.gridy = 0;
+		panelJoueur.add(jLCVictoire, gbc_lblNewLabel);
 		
-		button.setBorder(BorderFactory.createEmptyBorder());
-		button.setContentAreaFilled(false);
-		plateau.add(button);
+		jLBlankMain = new JLabel();
+		jLBlankMain.setPreferredSize(new Dimension(100,150));
+		GridBagConstraints gbc_txtMain = new GridBagConstraints();
+		gbc_txtMain.insets = new Insets(0, 0, 0, 5);
+		gbc_txtMain.gridx = 3;
+		gbc_txtMain.gridy = 0;
+		panelJoueur.add(jLBlankMain, gbc_txtMain);
 		
-		*/
-		
-		Carte carte = new Carte(Couleur.bleu,Forme.cercle,false);
-		Map<List<Integer>,Carte> plateau = new HashMap<List<Integer>,Carte>();
-		List<Integer> position = new ArrayList<Integer>();
-		position.add(1);
-		position.add(2);
-		
-		
-		plateau.put(position, carte);
-		
-		position = new ArrayList<Integer>();
-		position.add(2);
-		position.add(2);
-		plateau.put(position, carte);
-		
-		
-		
-		Map<List<Integer>,Boolean> plateauBool = new HashMap<List<Integer>,Boolean>();
-		position = new ArrayList<Integer>();
-		position.add(1);
-		position.add(1);
-		plateauBool.put(position, true);
-		
-		position = new ArrayList<Integer>();
-		position.add(0);
-		position.add(1);
-		plateauBool.put(position, true);
-		
-		resetPlateau(5,5,plateau,plateauBool);
-		partie.nouveauTour();
-		partie.getJoueurEnCours().piocherCarte();
-		resetMain();
-		
+		controleur.premierTour();
+		resetPlateau();
 		JPanel panel_2 = new JPanel();
 		frame.getContentPane().add(panel_2, BorderLayout.SOUTH);
+		
+	
+		//Ajoute carte Victoire
+		if (partie.getModeAvance()) {
+			JLabel labelCV = new JLabel();
+			labelCV.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED));
+			labelCV.setPreferredSize(new Dimension(100,150));
+			jPCVictoire.add(labelCV);
+		}
 	}
 	
 	/*
@@ -176,7 +236,7 @@ public class InterfaceJeu implements ActionListener,Observer{
 	 */
 	
 
-	
+	// Gestion des boutons
 	public void actionPerformed(ActionEvent e) {
 		Object src = e.getSource();
 		
@@ -185,113 +245,203 @@ public class InterfaceJeu implements ActionListener,Observer{
 			//ajoute le boutton à la liste des boutons selectionnés
 			selection.add( (ButtonCarte) src );
 			
+			//si 1 bouton selectionné
+			if (selection.size() == 1) {
+				((ButtonCarte) src).setBorder(BorderFactory.createLineBorder(Color.red));
+				
+				//Si le bouton est sur le plateau et que le joueur n'a pas encore bougé de carte
+				if ((src instanceof ButtonCartePlateau) && (!partie.getJoueurEnCours().getABougeCarte())) {
+					positionCarte = ((ButtonCartePlateau) src).getPosition();
+					controleur.updatePlateau(positionCarte);
+					
+				}
+				
+				//si le bouton est dans la main du joueur
+				if ((src instanceof ButtonCarteMain) && (!(partie.getJoueurEnCours().getAPlaceCarte()))) {
+					resetUpdatePlateau(true);
+				}
+			}
+			
+			
 			//Si 2 boutons sont selectionnés
 			if(selection.size() == 2) {
 				ButtonCarteSelection();
 			}
 		}
 		
+		//Si le bouton fin du tour est pressé
 		if (src instanceof JButton) {
-			//rajouter condition joueur
-			controleur.nouveauTour();
+			if (partie.getJoueurEnCours().getAPlaceCarte()) {
+				controleur.nouveauTour();
+			}
+			else {
+				((JButton) src).setSelected(false);
+			}
+			
 		}
 		
 		
 	}
 	
-	
+	//Si 2 boutons sont pressés
 	public void ButtonCarteSelection() {
 		ButtonCarte bouton1 = selection.get(0);
 		ButtonCarte bouton2 = selection.get(1);
-		
-		
-		//button 1 et 2 identiques
+		Joueur joueurEnCours = partie.getJoueurEnCours();
+			
+		//button 1 et 2 identiques --> deselection du bouton
 		if (bouton1 == bouton2) {
 			selection.removeAll(selection);		
-			System.out.println("PLOP identique");
+			controleur.resetUpdatePlateau();
+			bouton1.setBorder(null);
 		}
 		
-		//bouton 1 main et bouton 2 vide
-		else if((bouton1 instanceof ButtonCarteMain) && (bouton2 instanceof ButtonCarteVide)) {
+		//bouton 1 main et bouton 2 vide --> met la carte en main sur le plateau
+		else if((bouton1 instanceof ButtonCarteMain) && (bouton2 instanceof ButtonCarteVide) && (!(joueurEnCours.getAPlaceCarte()))) {
 			//On ajoute la carte de la main au plateau.
+
 			selection.removeAll(selection);
-			System.out.println("PLOP placer");
 			bouton1.setSelected(false);
 			bouton2.setSelected(false);
+			placerCarte((ButtonCarteMain)bouton1,(ButtonCarteVide)bouton2);
 		}
 		
-		//bouton 2 main et bouton 1 vide
-		else if ((bouton1 instanceof ButtonCarteVide) && (bouton2 instanceof ButtonCarteMain)) {
+		//bouton 2 main et bouton 1 vide --> met la carte en main sur le plateau
+		else if ((bouton1 instanceof ButtonCarteVide) && (bouton2 instanceof ButtonCarteMain) && (!(joueurEnCours.getAPlaceCarte()))) {
 			//On ajoute la carte de la main au plateau.
+			
 			selection.removeAll(selection);
-			System.out.println("PLOP placer");
 			bouton1.setSelected(false);
 			bouton2.setSelected(false);
+			placerCarte((ButtonCarteMain)bouton2,(ButtonCarteVide)bouton1);
 		}
 		
 		
-		//Bouton 1 carte et bouton 2 vide
-		else if ((bouton1 instanceof ButtonCartePlateau) && (bouton2 instanceof ButtonCarteVide)) {
+		//Bouton 1 carte et bouton 2 vide --> bouge la carte sur le plateau
+		else if ((bouton1 instanceof ButtonCartePlateau) && (bouton2 instanceof ButtonCarteVide) && (!(joueurEnCours.getABougeCarte()))) {
 			//On bouge la carte du plateau
 			selection.removeAll(selection);
-			System.out.println("PLOP bouger");
 			bouton1.setSelected(false);
 			bouton2.setSelected(false);
+			bougerCarte((ButtonCartePlateau)bouton1,(ButtonCarteVide)bouton2);
 		}
 		
-		//Bouton 2 carte et bouton 1 vide
-		else if ((bouton1 instanceof ButtonCarteVide) && (bouton2 instanceof ButtonCartePlateau)) {			
-			//On bouge la carte du plateau
+		//Bouton 2 carte du plateau  --> seul la deuxième carte est selectionnée + update plateau
+		else if ((bouton2 instanceof ButtonCartePlateau) && (!(joueurEnCours.getABougeCarte()))){
 			selection.removeAll(selection);
-			System.out.println("PLOP bouger");
+			selection.add(bouton2);
 			bouton1.setSelected(false);
-			bouton2.setSelected(false);
-		}
-		
-		//2 cartes selectionnées mais on ne peut rien faire, seul la deuxième carte est selectionnée
+			
+			positionCarte = ((ButtonCartePlateau) bouton2).getPosition();
+			controleur.updatePlateau(positionCarte);
+		}		
+		// on ne peut rien faire --> on selectionne seulement le bouton 2
 		else {
 			selection.removeAll(selection);
 			selection.add(bouton2);
 			bouton1.setSelected(false);
-			System.out.println("PLOP deselection");
-		}		
+			bouton1.setBorder(null);
+			bouton2.setBorder(BorderFactory.createLineBorder(Color.red));
+			
+			// bouton 2 carte de la main --> on update le plateau
+			if((bouton2 instanceof ButtonCarteMain) && (!joueurEnCours.getAPlaceCarte())) {
+				resetUpdatePlateau(true);
+			}
+		}
+		
 	}
 	
-	public void resetMain () {
+	/* réinitialise l'affichage pour correspondre au joueurEnCours */
+	public void resetJoueur() {
+		Joueur joueurEnCours = partie.getJoueurEnCours();
+		Carte carteVictoire = joueurEnCours.getCarteVictoire();
+		if (!partie.getModeAvance()) {
+			jPCVictoire.removeAll();
+			jPCVictoire.add(new JLabel(new ImageIcon(carteVictoire.getFileName())));
+		}
+		resetMain(5);
+		jPCVictoire.updateUI();
+	}
+	
+	/* réinitialise la main, le i désigne la position d'une carte déjà utilisé */
+	public void resetMain (int vide) {
 		labelMain.removeAll();
 		List<Carte> main = partie.getJoueurEnCours().getMain();
-		
-		labelMain.setLayout(new GridLayout(1, main.size(), 0, 0));
-		
+		Dimension dimMain = new Dimension(100,150);
+
+		labelMain.setLayout(new GridLayout(1, main.size(), 50, 0));
+		ButtonCarte bouton;
 		Iterator<Carte> it = main.iterator();
 		int i=0;
 		while (it.hasNext()) {
-			labelMain.add(buttonCarteMain(it.next(),i));
+			if (i!=vide) {
+				bouton = buttonCarteMain(it.next(),i);
+				JPanel panelMain = listPanelMain.get(i);
+				panelMain.removeAll();
+				panelMain.add(bouton);
+			}
+			else {
+				it.next();
+				JPanel panelMain = listPanelMain.get(i);
+				panelMain.removeAll();
+				JLabel labelMain = new JLabel();
+				labelMain.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED));
+				labelMain.setPreferredSize(dimMain);
+				panelMain.add(labelMain);				
+			}
 			i++;
 		}
 		
-		
+		//rafraichit l'affichage
+		labelMain.updateUI();
 	}
 	
-	
-	public void resetPlateau(int longueur,int largeur,Map<List<Integer>,Carte> plateau, Map<List<Integer>,Boolean> plateauBool) {
-		//nettoie l'ancien plateau
+	/* prmet de recréer le plateau */
+	public void resetPlateau() {
+		//nettoie l'ancien plateau et la liste de boutons
 		labelPlateau.removeAll();
+		listeButtonVide.clear();
 		
+		int width = partie.getLongueurPlateau();
+		int height = partie.getLargeurPlateau();
+		int longueurMin = partie.getLongueurMinPlateau();
+		int largeurMin = partie.getLargeurMinPlateau();
+		Map<List<Integer>,Carte> plateau = partie.getPlateau();
+		Map<List<Integer>,Boolean> plateauBool = partie.getPlateauBool();	
+		
+		//labelPlateau.setLayout(new GridLayout(10, 1, 0, 0));
+		labelPlateau.setLayout(new GridLayout(height, width, 0, 0));
 		
 		//crée un nouveau plateau de la taille spécifiée
-		labelPlateau.setLayout(new GridLayout(longueur, largeur, 0, 0));
-		for (int i = 0;i<longueur;i++) {
-			for (int j = 0;j<largeur;j++) {
+		Dimension dimCarte = labelPlateau.getSize();
+
+		System.out.println("dimension plateau origine =" + dimCarte);
+		System.out.println("width : " + width + " | height : " + height);
+		
+		dimCarte.setSize((int) (dimCarte.getHeight()*2*width)/(3*height),dimCarte.getHeight());
+		
+		if (dimCarte.getHeight() != 0) {
+			labelPlateau.setMinimumSize(dimCarte);
+			labelPlateau.setMaximumSize(dimCarte);
+		}
+		
+		dimCarte.setSize(dimCarte.getWidth()/width, dimCarte.getHeight()/height);
+
+		
+		for (int i = height+largeurMin-1;i>=largeurMin;i--) {
+			for (int j = width+longueurMin-1;j>=longueurMin;j--) {
 				List<Integer> position = new ArrayList<Integer>();
 				position.add(i);
 				position.add(j);
 				if (plateau.containsKey(position)) {
-					labelPlateau.add(buttonCartePlateau(plateau.get(position),position));
-					
+					labelPlateau.add(buttonCartePlateau(plateau.get(position),position,dimCarte));
 				}
 				else if (plateauBool.containsKey(position)) {
+					
 					labelPlateau.add(buttonCarteVide(position));
+				}
+				else if (position.equals(positionCarteVictoire)) {
+					labelPlateau.add(buttonCarteVictoire(position));
 				}
 				else {
 					labelPlateau.add(Box.createGlue());
@@ -299,41 +449,131 @@ public class InterfaceJeu implements ActionListener,Observer{
 			}
 		}
 		
+		labelPlateau.updateUI();
 	}
 	
-	public void finTour() {
+	
+	// désactive les boutons vide qui ne sont pas sur le plateau booleen
+	public void updatePlateau() {
 		
+		Map<List<Integer>,Boolean> plateauBool = partie.getPlateauBool();
+		
+		Iterator<ButtonCarteVide> it = listeButtonVide.iterator();
+		List<Integer> position;
+		ButtonCarteVide bouton;
+		
+		while (it.hasNext()) {
+			bouton = it.next();
+			position = bouton.getPosition();
+			if (plateauBool.containsKey(position)) {
+				bouton.setEnabled(true);
+			}
+			else {
+				bouton.setEnabled(false);
+			}
+		}
 	}
 	
-	private ButtonCarte buttonCartePlateau(Carte carte, List<Integer> position) {
-		ButtonCarte buttonCarte = new ButtonCartePlateau(carte,position);
+	
+	
+	public void resetUpdatePlateau(boolean state) {
+		partie.getPlateauBool();
+		Iterator<ButtonCarteVide> it = listeButtonVide.iterator();
+		while (it.hasNext()) {
+			it.next().setEnabled(state);
+		}
+	}
+	
+	/*communication controleur*/
+	
+	
+	//Demande au controleur de placer une carte
+	public void placerCarte(ButtonCarteMain buttonMain, ButtonCarteVide buttonCarte) {
+		controleur.placerCarte(buttonMain.getCarte(), buttonCarte.getPosition());
+		resetMain(buttonMain.getPosition());
+	}
+	
+	//Demande au controleur de bouger une carte
+	public void bougerCarte(ButtonCartePlateau buttonCarte, ButtonCarteVide buttonVide) {
+		controleur.bougerCarte(buttonCarte.getPosition(), buttonVide.getPosition());
+	}
+	
+	//Demande au controleur de commencer le premier tour
+	public void premierTour() {
+		controleur.premierTour();
+	}
+	
+	//Demande au controleur de terminer le tour en cours et de commencer le suivant
+	public void finTour() {
+		controleur.nouveauTour();
+	}
+
+	/* constructeurs boutons */
+	
+	// bouton carte victoire sur le plateau
+	private ButtonCarte buttonCarteVictoire(List<Integer> position) {
+		ButtonCarte buttonCarte = new ButtonCartePlateau(position);
+		buttonCarte.setEnabled(false);
+		buttonCarte.setBorder(BorderFactory.createEmptyBorder());
+		
+		return buttonCarte;
+	}
+	
+	
+	// bouton carte sur plateau
+	private ButtonCarte buttonCartePlateau(Carte carte, List<Integer> position,Dimension dimCarte) {
+		ButtonCarte buttonCarte = new ButtonCartePlateau(carte,position,dimCarte);
 		buttonCarte.addActionListener(this);
+		buttonCarte.setBorder(BorderFactory.createEmptyBorder());
 		
 		return buttonCarte;
 	}
 
+	// bouton carte vide sur la plateau
 	private ButtonCarte buttonCarteVide(List<Integer> position) {
 		ButtonCarte buttonCarte = new ButtonCarteVide(position);
 		buttonCarte.addActionListener(this);
 		
-		return buttonCarte;
-	}
-	
-	private ButtonCarte buttonCarteMain(Carte carte,int position) {
-		ButtonCarte buttonCarte = new ButtonCarteMain(carte,position);
-		buttonCarte.addActionListener(this);
+		listeButtonVide.add((ButtonCarteVide)buttonCarte);
+		
 		
 		return buttonCarte;
 	}
 	
+	// bouton carte main
+	private ButtonCarte buttonCarteMain(Carte carte,int position) {
+		ButtonCarte buttonCarte;
+		buttonCarte = new ButtonCarteMain(carte,position);
+		buttonCarte.addActionListener(this);
+		buttonCarte.setBorder(BorderFactory.createEmptyBorder());
+		
+		return buttonCarte;
+	}
 	
-
+	/* interface observeur*/
+	
 	@Override
-	public void update(Observable observable, Object arg1) {
+	public void update(Observable observable, Object arg) {
+		
 		
 		if (observable instanceof Partie) {
-			Partie partie = (Partie) observable;
-			resetPlateau(partie.getLongueurPlateau(),partie.getLargeurPlateau(),partie.getPlateau(),partie.getPlateauBool());
+			System.out.println("PLOP observeur partie");
+			Etat etat = (Etat) arg;
+			if (etat == Etat.reset) {
+				resetPlateau();
+				resetUpdatePlateau(false);
+			}
+			if (etat == Etat.update) {
+				updatePlateau();
+			}
+			else {
+				resetUpdatePlateau(false);
+			}
+			
+		}
+		
+		if (observable instanceof Joueur) {
+			resetJoueur();
 		}
 		
 	}

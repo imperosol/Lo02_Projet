@@ -4,6 +4,7 @@ package modele.joueur;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Observable;
 
 import modele.Carte;
 import modele.Partie;
@@ -11,7 +12,8 @@ import modele.Pioche;
 import modele.score.ScoreInterface;
 import modele.score.ScoreVisitor;
 
-public class Joueur implements ScoreInterface {
+@SuppressWarnings("deprecation")
+public class Joueur extends Observable implements ScoreInterface {
 	
 	private Carte carteVictoire;
 	private int numeroJoueur;
@@ -19,6 +21,10 @@ public class Joueur implements ScoreInterface {
 	private List<Carte> main;
 	private Pioche pioche;
 	private Partie partie;
+	private int numCarteJouee = -1;
+	
+	private boolean aPlaceCarte; //true si a déjà placé une carte pendant son tour
+	private boolean aBougeCarte; //true si a déjà bougé une carte pendant son tour
 	
 	public Joueur(int numeroJoueur,  StratégyJoueur strategie, Partie partie, Pioche pioche) { 
 		this.numeroJoueur = numeroJoueur;
@@ -37,7 +43,6 @@ public class Joueur implements ScoreInterface {
 			piocherCarte();
 			piocherCarte();
 		}
-		
 	}
 	
 	public List<Carte> getMain() {
@@ -48,13 +53,38 @@ public class Joueur implements ScoreInterface {
 		this.carteVictoire = carteVictoire;
 	}
 	
+	public void debutTour() {
+		partie.ouAjouterCarte();
+		aPlaceCarte = false;
+		aBougeCarte = false;
+		if(!partie.getModeAvance()) {
+			
+			piocherCarte();
+		}
+		
+		setChanged();
+		notifyObservers();
+	}
+	
+	
+	public void finTour() {
+		if (partie.getModeAvance()) {
+			System.out.println("JE PIOCHE A LA FIN");
+			piocherCarte();
+		}
+	}
+	
+	
+	
 	
 	/* la méthode piocherCarte permet aussi de supprimer la carte utilisé
 	 * Elle réduit la taille de la main quand la pioche est vide
 	 */
 	public void piocherCarte() {
 		Carte carte = this.pioche.piocherCarte();
-		int i = stratégie.getDerniereCarte();
+		int i = numCarteJouee;
+		
+		//int i = stratégie.getDerniereCarte();
 		
 		if (carte != null) {
 			if (this.stratégie instanceof JoueurReel) {
@@ -81,6 +111,10 @@ public class Joueur implements ScoreInterface {
 			}
 			this.main = mainNew;
 		}
+		
+		hasChanged();
+		notifyObservers();
+		
 	}
 	
 	
@@ -104,10 +138,13 @@ public class Joueur implements ScoreInterface {
 	}
 	
 	public void bougerCarteJoueur(List<Integer> positionCarte, List<Integer> positionFinale) {
+		aBougeCarte = true;
 		partie.bougerCarte(positionCarte, positionFinale);
 	}
 	
 	public void placerCarteJoueur(Carte carte, List<Integer> position) {
+		numCarteJouee = main.indexOf(carte);
+		aPlaceCarte = true;
 		partie.ajouterCarte(position, carte);
 	}
 	
@@ -132,6 +169,14 @@ public class Joueur implements ScoreInterface {
 	
 	public int getNumJoueur() {
 		return numeroJoueur;
+	}
+	
+	public boolean getABougeCarte() {
+		return aBougeCarte;
+	}
+	
+	public boolean getAPlaceCarte() {
+		return aPlaceCarte;
 	}
 
 	public String toString() {

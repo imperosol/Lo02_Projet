@@ -23,4 +23,20 @@ public class ContextPlateau {
 	   public void afficherPlateau(Map<List<Integer>,Carte> plateau, Map<List<Integer>,Boolean> plateauBool) {
 		   strategy.afficherPlateau(plateau,plateauBool);
 	   }
+	   
+	   public int getLongueur() {
+		   return strategy.getLongueur();
+	   }
+	   
+	   public int getLongueurMin() {
+		   return strategy.getLongueurMin();
+	   }
+	   
+	   public int getLargeur() {
+		   return strategy.getLargeur();
+	   }
+	   
+	   public int getLargeurMin() {
+		   return strategy.getLargeurMin();
+	   }
 }

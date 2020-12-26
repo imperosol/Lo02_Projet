@@ -27,5 +27,29 @@ public class PlateauTriangle extends PlateauStatique implements StrategyPlateau 
 	public void afficherPlateau(Map<List<Integer>, Carte> plateau, Map<List<Integer>, Boolean> plateauBool) {
 		super.afficherPlateau(plateau, plateauBool);
 	}
+
+	@Override
+	public int getLongueur() {
+		// TODO Auto-generated method stub
+		return super.getLongueur();
+	}
+
+	@Override
+	public int getLargeur() {
+		// TODO Auto-generated method stub
+		return super.getLargeur();
+	}
+	
+	@Override
+	public int getLongueurMin() {
+		// TODO Auto-generated method stub
+		return super.getLongueurMin();
+	}
+
+	@Override
+	public int getLargeurMin() {
+		// TODO Auto-generated method stub
+		return super.getLargeurMin();
+	}
 }
 

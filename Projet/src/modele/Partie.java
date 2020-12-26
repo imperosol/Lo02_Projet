@@ -15,6 +15,7 @@ import modele.plateau.*;
 import modele.score.Score;
 import modele.score.ScoreInterface;
 import modele.score.ScoreVisitor;
+import vue.Etat;
 
 @SuppressWarnings("deprecation")
 public class Partie extends Observable implements ScoreInterface {
@@ -65,9 +66,9 @@ public class Partie extends Observable implements ScoreInterface {
 		this.modeAvance = modeAvance;
 		this.joueur = new ArrayList<Joueur>();
 		
-		int nbJoueur = (joueur3) ? 3 : 2;
+		nbrJoueur = (joueur3) ? 3 : 2;
 		
-		for (int i=0;i<nbJoueur;i++) {
+		for (int i=0;i<nbrJoueur;i++) {
 			if (IA.get(i)) {
 				this.joueur.add(new Joueur(i+1,new IAAleatoire() , this, this.pioche)); 
 			}
@@ -84,11 +85,13 @@ public class Partie extends Observable implements ScoreInterface {
 	
 	public void nouveauTour() {
 		if (!(pioche.piocheVide())) {
-			//joueurEnCours.tour();
+			joueurEnCours.finTour();
+			changerJoueur();
 		}
 		else if (modeAvance){
 			if (joueurEnCours.tailleMain()>1) {
-				//joueurEnCours.tour();
+				joueurEnCours.finTour();
+				changerJoueur();
 			}
 			else {
 				determinerCarteVictoire();
@@ -96,18 +99,20 @@ public class Partie extends Observable implements ScoreInterface {
 			}
 		}
 		else {
+			joueurEnCours.finTour();
 			fin = true;
 		}
 		
 		setChanged();
-		notifyObservers();
+		notifyObservers(Etat.reset);
 	}
 	
-	public void ChangerJoueur() {
+	public void changerJoueur() {
 		//permet de passer au joueur suivant
 		int numJoueur = joueurEnCours.getNumJoueur();
-		numJoueur = numJoueur%3;
+		numJoueur = numJoueur%nbrJoueur;
 		joueurEnCours = joueur.get(numJoueur);
+		joueurEnCours.debutTour();
 	}
 	
 	public void determinerCarteVictoire() {
@@ -166,6 +171,28 @@ public class Partie extends Observable implements ScoreInterface {
 			position.add(0);
 			this.plateauBool.put(position, true);
 		}
+
+		setChanged();
+		notifyObservers(Etat.resetUpdate);
+		
+		return this.plateauBool;
+	}
+	
+	//TODO déguelasse à changer si le temps
+	public Map<List<Integer>,Boolean> ouAjouterCarteReset() {
+		
+		this.plateauBool = context.ouAjouterCarte(this.plateau);
+		
+		/* Aucune carte sur le plateau, on initialise la position en (0,0) */
+		if (this.plateauBool.size()==0) {
+			List<Integer> position = new ArrayList<Integer>();
+			position.add(0);
+			position.add(0);
+			this.plateauBool.put(position, true);
+		}
+
+		setChanged();
+		notifyObservers(Etat.reset);
 		
 		return this.plateauBool;
 	}
@@ -176,6 +203,9 @@ public class Partie extends Observable implements ScoreInterface {
 		if (this.plateauBool.size()==0) {
 			plateauBool.put(position, true);
 		}
+		
+		setChanged();
+		notifyObservers(Etat.update);
 		
 		return this.plateauBool;
 	}
@@ -192,7 +222,7 @@ public class Partie extends Observable implements ScoreInterface {
 		}
 		
 		setChanged();
-		notifyObservers();
+		notifyObservers(Etat.reset);
 	}
 	
 	
@@ -212,7 +242,7 @@ public class Partie extends Observable implements ScoreInterface {
 		}
 		
 		setChanged();
-		notifyObservers();
+		notifyObservers(Etat.reset);
 	}
 	
 	
@@ -236,13 +266,21 @@ public class Partie extends Observable implements ScoreInterface {
 	}
 	
 	public int getLargeurPlateau() {
-		return 0;
+		return context.getLargeur();
 	}
 	
 	public int getLongueurPlateau() {
-		return 0;
+		return context.getLongueur();
+	}
+	
+	public int getLongueurMinPlateau() {
+		return context.getLongueurMin();
 	}
 
+	public int getLargeurMinPlateau() {
+		return context.getLargeurMin();
+	}
+	
 	public List<Joueur> getJoueur() {
 		return joueur;
 	}
