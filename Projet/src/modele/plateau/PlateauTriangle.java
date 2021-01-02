@@ -29,27 +29,27 @@ public class PlateauTriangle extends PlateauStatique implements StrategyPlateau 
 	}
 
 	@Override
-	public int getLongueur() {
+	public int getWidth() {
 		// TODO Auto-generated method stub
-		return super.getLongueur();
+		return super.getWidth();
 	}
 
 	@Override
-	public int getLargeur() {
+	public int getHeight() {
 		// TODO Auto-generated method stub
-		return super.getLargeur();
+		return super.getHeight();
 	}
 	
 	@Override
-	public int getLongueurMin() {
+	public int getMinWidth() {
 		// TODO Auto-generated method stub
-		return super.getLongueurMin();
+		return super.getMinWidth();
 	}
 
 	@Override
-	public int getLargeurMin() {
+	public int getMinHeight() {
 		// TODO Auto-generated method stub
-		return super.getLargeurMin();
+		return super.getMinHeight();
 	}
 }
 

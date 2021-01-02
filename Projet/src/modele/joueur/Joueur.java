@@ -69,7 +69,6 @@ public class Joueur extends Observable implements ScoreInterface {
 	
 	public void finTour() {
 		if (partie.getModeAvance()) {
-			System.out.println("JE PIOCHE A LA FIN");
 			piocherCarte();
 		}
 	}

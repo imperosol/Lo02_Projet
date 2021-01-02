@@ -19,7 +19,7 @@ public class ButtonCarte extends JToggleButton {
 	//Rajouter attribut IA pour rendre boutton inactif  this.setEnabled(false);
 	
 	public ButtonCarte(){
-		super("Vide");
+		super(" --?-- ");
 	}
 	
 	public ButtonCarte(String fileName) {

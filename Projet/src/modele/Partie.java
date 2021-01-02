@@ -34,6 +34,7 @@ public class Partie extends Observable implements ScoreInterface {
 	private Carte carteCachee; // Stock carte cachée
 	private List<Integer> positionCarteVictoire = null;
 	private Boolean fin;
+	private Context contextPlateau;
 	
 	private Pioche pioche;
 	
@@ -80,7 +81,53 @@ public class Partie extends Observable implements ScoreInterface {
 		joueurEnCours = joueur.get(0);
 	}
 	
-	// public Partie(fichier Sauvegarde)
+	public Partie(String Plateau, Boolean ModeAvance,String[] Joueur) {
+		
+		this.modeAvance = ModeAvance;
+		
+		//initialisation pioche
+				this.pioche = new Pioche();
+				this.carteCachee = this.pioche.piocherCarte();
+		
+		List<Integer> position;
+
+		//initialistation plateau
+				if (Plateau == "rectangulaire") {
+					this.context = new ContextPlateau(new PlateauRectangle());
+				}
+				else if (Plateau == "triangulaire") {
+					this.context = new ContextPlateau(new PlateauTriangle());
+				}
+				else {
+					position = new ArrayList<Integer>();
+					position.add(-1);
+					position.add(0);
+					this.context = new ContextPlateau(new PlateauVariante(position));
+					this.positionCarteVictoire = position;
+				}
+				
+				this.nbrJoueur=0;
+				this.joueur = new ArrayList<Joueur>();
+
+				for (int i=0;i<3;i++) {
+					if (Joueur[i]=="Humain") {
+						this.joueur.add(new Joueur(i+1,new JoueurReel() , this, this.pioche));
+						nbrJoueur++;
+					}
+					
+					if (Joueur[i]=="IA") {
+						this.joueur.add(new Joueur(i+1,new IAAleatoire() , this, this.pioche)); 
+						nbrJoueur++;
+						
+					
+					}
+				}
+				fin = false;
+				joueurEnCours = joueur.get(0);
+		
+	}
+	
+	
 	
 	
 	public void nouveauTour() {
@@ -148,6 +195,7 @@ public class Partie extends Observable implements ScoreInterface {
 	        determinerCarteVictoire();
 	    }
 	    Score score = new Score(this);
+	    score.scorePartie();
 	}
 	
 	
@@ -265,20 +313,20 @@ public class Partie extends Observable implements ScoreInterface {
 		return plateauBool;
 	}
 	
-	public int getLargeurPlateau() {
-		return context.getLargeur();
+	public int getWidthPlateau() {
+		return context.getWidth();
 	}
 	
-	public int getLongueurPlateau() {
-		return context.getLongueur();
+	public int getHeightPlateau() {
+		return context.getHeight();
 	}
 	
-	public int getLongueurMinPlateau() {
-		return context.getLongueurMin();
+	public int getMinWidthPlateau() {
+		return context.getMinWidth();
 	}
 
-	public int getLargeurMinPlateau() {
-		return context.getLargeurMin();
+	public int getMinHeightPlateau() {
+		return context.getMinHeight();
 	}
 	
 	public List<Joueur> getJoueur() {
@@ -291,6 +339,10 @@ public class Partie extends Observable implements ScoreInterface {
 	
 	public List<Integer> getPositionCarteVictoire(){
 		return this.positionCarteVictoire;
+	}
+	
+	public Context getContextPlateau() {
+		return contextPlateau;
 	}
 	
 	
@@ -313,12 +365,6 @@ public class Partie extends Observable implements ScoreInterface {
 		 * 
 		 * si modeAvance = true alors on est en mode anavcé, sinon on est en mode normal
 		 */
-		
-		List<Boolean> IAJoueur = new ArrayList<Boolean>();
-		IAJoueur.add(false);		IAJoueur.add(false);;
-		
-		Partie partie = new Partie(Context.triangle,false,false,IAJoueur);
-		
-		partie.jouerPartie();
+
 	}
 }

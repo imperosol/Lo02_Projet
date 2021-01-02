@@ -6,7 +6,10 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
-
+/** pioche provides a queue of card that will be used in a game
+ * it also have the methods with 
+ * 
+ */
 public class Pioche {
 	private Queue<Carte> pioche = new LinkedList<Carte>();
 	

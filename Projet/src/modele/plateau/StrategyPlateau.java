@@ -12,11 +12,11 @@ public interface StrategyPlateau {
 	
 	public void afficherPlateau(Map<List<Integer>,Carte> plateau, Map<List<Integer>,Boolean> plateauBool);
 	
-	public int getLongueur();
+	public int getWidth();
 	
-	public int getLargeur();
+	public int getHeight();
 	
-	public int getLongueurMin();
+	public int getMinWidth();
 	
-	public int getLargeurMin();
+	public int getMinHeight();
 }

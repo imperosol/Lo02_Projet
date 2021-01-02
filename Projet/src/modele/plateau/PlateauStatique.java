@@ -188,19 +188,19 @@ public class PlateauStatique {
 		}
 	}
 	
-	public int getLongueur() {
+	public int getWidth() {
 		return colMax -  colMin + 1;
 	}
 	
-	public int getLongueurMin() {
+	public int getMinWidth() {
 		return colMin;
 	}
 	
-	public int getLargeur() {
+	public int getHeight() {
 		return borneMax - borneMin + 1;
 	}
 
-	public int getLargeurMin() {
+	public int getMinHeight() {
 		return borneMin;
 	}
 

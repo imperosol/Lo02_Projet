@@ -2,8 +2,10 @@ package modele.plateau;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import modele.Carte;
 
@@ -17,17 +19,28 @@ public class PlateauRectangle implements StrategyPlateau {
 	private Map<List<Integer>, Carte> plateau;
 	
 	// determine dynamiquement les bornes du plateau
-	public void getBorne(Map<List<Integer>, Carte> plateau) {
+	public void getBorne() {
 		List<Integer> position;
 		
 		this.borneLigne = new int[2];
 		this.borneColonne = new int[2];
 		
+		Set<List<Integer>> listeDeClé = plateau.keySet();
+		Iterator<List<Integer>> it = listeDeClé.iterator();
 		
-		for (Map.Entry<List<Integer>, Carte> mapEntry : plateau.entrySet()) {
-			
-			position = mapEntry.getKey();
+		//initialisation
+		if (it.hasNext()) {
+			position = it.next();
+			this.borneLigne[0] = position.get(0);
+			this.borneLigne[1] = position.get(0);
+			this.borneColonne[0] = position.get(1);
+			this.borneColonne[1] = position.get(1);
+		}
+
+		
+		while(it.hasNext()) {
 			// recherche position max/min
+			position = it.next();
 			if (position.get(0) < this.borneLigne[0]) {
 				this.borneLigne[0] = position.get(0);
 			}
@@ -41,7 +54,6 @@ public class PlateauRectangle implements StrategyPlateau {
 			else if (position.get(1) > this.borneColonne[1]) {
 				this.borneColonne[1] = position.get(1);
 			}
-			
 		}
 		
 		//incrémentation = différence entre borne maximale et minimale
@@ -61,7 +73,7 @@ public class PlateauRectangle implements StrategyPlateau {
 		this.plateau= plateau;
 		
 		// 1) trouver bornes colonnes/ligne
-		getBorne(plateau);
+		getBorne();
 		/* 2) On teste toutes les cases adjacentes aux cartes
 		 * Pour chaque cases :
 		 * On vérifie qu'il n'y a pas de carte sur cette case
@@ -98,11 +110,12 @@ public class PlateauRectangle implements StrategyPlateau {
 		this.plateauBool = new HashMap<List<Integer>,Boolean>();
 		this.plateau= plateau;
 		Carte carteABouger = plateau.get(positionCarte);
-		System.out.print(carteABouger);
 		this.plateau.remove(positionCarte);
 		this.plateauBool = this.ouAjouterCarte(this.plateau);
 		this.plateau.put(positionCarte,carteABouger);
 		this.plateauBool.remove(positionCarte);
+		
+		getBorne();
 		
 		return this.plateauBool;
 	
@@ -180,25 +193,22 @@ public class PlateauRectangle implements StrategyPlateau {
 	}
 
 	@Override
-	public int getLongueur() {
-		// TODO Auto-generated method stub
+	public int getWidth() {
 		return borneColonne[1]-borneColonne[0]+1;
 	}
 
 	@Override
-	public int getLargeur() {
-		// TODO Auto-generated method stub
+	public int getHeight() {
 		return borneLigne[1]-borneLigne[0]+1;
 	}
 
 	@Override
-	public int getLongueurMin() {
+	public int getMinWidth() {
 		return borneColonne[0];
 	}
 
 	@Override
-	public int getLargeurMin() {
-		// TODO Auto-generated method stub
+	public int getMinHeight() {
 		return borneLigne[0];
 	}
 }

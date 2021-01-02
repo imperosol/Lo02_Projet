@@ -31,26 +31,22 @@ public class PlateauVariante extends PlateauStatique implements StrategyPlateau 
 
 
 	@Override
-	public int getLongueur() {
-		// TODO Auto-generated method stub
-		return super.getLongueur();
+	public int getWidth() {
+		return super.getWidth();
 	}
 
 	@Override
-	public int getLargeur() {
-		// TODO Auto-generated method stub
-		return super.getLargeur();
+	public int getHeight() {
+		return super.getHeight();
 	}
 	
 	@Override
-	public int getLongueurMin() {
-		// TODO Auto-generated method stub
-		return super.getLongueurMin();
+	public int getMinWidth() {
+		return super.getMinWidth();
 	}
 
 	@Override
-	public int getLargeurMin() {
-		// TODO Auto-generated method stub
-		return super.getLargeurMin();
+	public int getMinHeight() {
+		return super.getMinHeight();
 	}
 }

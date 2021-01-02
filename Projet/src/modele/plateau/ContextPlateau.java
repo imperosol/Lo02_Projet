@@ -24,19 +24,19 @@ public class ContextPlateau {
 		   strategy.afficherPlateau(plateau,plateauBool);
 	   }
 	   
-	   public int getLongueur() {
-		   return strategy.getLongueur();
+	   public int getWidth() {
+		   return strategy.getWidth();
 	   }
 	   
-	   public int getLongueurMin() {
-		   return strategy.getLongueurMin();
+	   public int getMinWidth() {
+		   return strategy.getMinWidth();
 	   }
 	   
-	   public int getLargeur() {
-		   return strategy.getLargeur();
+	   public int getHeight() {
+		   return strategy.getHeight();
 	   }
 	   
-	   public int getLargeurMin() {
-		   return strategy.getLargeurMin();
+	   public int getMinHeight() {
+		   return strategy.getMinHeight();
 	   }
 }

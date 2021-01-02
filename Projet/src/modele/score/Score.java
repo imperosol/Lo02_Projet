@@ -29,106 +29,114 @@ public class Score implements ScoreVisitor{
 	public List<Integer> scorePartie() {
 		
 		for(int i=0;i<player.size();i++) {
-			Joueur joueur = player.get(i);
-			score.add(scoreJoueur(joueur));
-			System.out.println("\ncarte victoire de " + joueur + " est " + carteVictoire.get(i));
-			System.out.println("le score de " + joueur + " est : " + score);
+			score.add(scoreJoueur(i));
+			//System.out.println("\ncarte victoire de " + joueur + " est " + carteVictoire.get(i));
+			//System.out.println("le score de " + joueur + " est : " + score);
 		}		
 		
 		
 		return score;
 	}
 	
-	public Integer scoreJoueur(Joueur joueur) {
-				
+	public Integer scoreJoueur(int i) {
+		Carte carteVictoire = this.carteVictoire.get(i);
+		if (this.positionCarteVictoire != null) {
+			plateau.put(positionCarteVictoire, carteVictoire);
+		}
 		
+		int score = this.compterScoreLigneColonne(carteVictoire, 0); // compte le score sur les lignes
+		score += this.compterScoreLigneColonne(carteVictoire, 1); // compte le score sur les colonnes
+		
+		return score;
 	}
 
-	public int compterScoreLigneColonne(Carte carteVictoire, int pos, Boolean ligne) {
+	public int compterScoreLigneColonne(Carte carteVictoire, int posX) { //posX = 0 si on comte ligne et 1 si on compte colonne
+		
 		int score = 0;
-        int incCouleur = 0;
-        int incForme = 0;
-        int incPlein = 0;
-        String posText;
-        Carte carte;
-        int k;
         List <Integer> position = new ArrayList<Integer>();
+        position.add(0);
+        position.add(0);
+        int posY;
+        String pos;
         
-		if (ligne) {
-			k=1;
-			position.add(-5);
-			position.add(pos);
-			posText = "colonne ";
-		}
-		
-		else {
-			k=0;
-			position.add(pos);
-			position.add(-5);
-			posText = "ligne ";
-		}
-		
-		
-		for (int j=-5;j<=5;j++) { // change de colonne/ligne
-			position.set(k, j);
-			
-			if (plateau.containsKey(position)) {
-				carte = plateau.get(position);
+        if (posX == 0) { //posX = 0 on a ligne
+        	posY = 1;
+        	pos = "Ligne";
+        }
+        
+        else { // posX = 1 on a colonnes
+        	posY = 0;
+        	pos = "colonne";
+        }
+        
+        Carte carte;
+        
+        
+		for (int i=-5;i<=5;i++) { //change de ligne/colonne
+			position.set(posX, i);
+	        int incCouleur = 0;
+	        int incForme = 0;
+	        int incPlein = 0;
+	        
+			for (int j=-5;j<=5;j++) { // change de colonne/ligne
+				position.set(posY, j);
 				
-				
-				
-				//Compte couleurs
-				if (carte.getCouleur() == carteVictoire.getCouleur()) {
-					incCouleur++;
-				}
-				else {
-					if (incCouleur>2) {
-						score += incCouleur + 1;
-						System.out.println(this.affScore(posText, pos, incCouleur, carteVictoire.affCouleur(), incCouleur + 1));
+				if (plateau.containsKey(position)) {
+					carte = plateau.get(position);
+					
+					//Compte couleurs
+					if (carte.getCouleur() == carteVictoire.getCouleur()) {
+						incCouleur++;
 					}
-					incCouleur=0;
-				}
-				
-				// Compte formes
-				if (carte.getForme() == carteVictoire.getForme()) {
-					incForme++;
-				}
-				else {
-					if (incForme>1) {
-						score += incForme - 1;
-						System.out.println(this.affScore(posText, pos, incForme, carteVictoire.affForme(), incForme - 1));
+					else {
+						if (incCouleur>2) {
+							score += incCouleur + 1;
+							System.out.println(this.affScore(pos, i, incCouleur, carteVictoire.affCouleur(), incCouleur + 1));
+						}
+						incCouleur=0;
 					}
-					incForme=0;
-				}
-				
-				
-				// Compte plein
-				if (carte.getPlein() == carteVictoire.getPlein()) {
-					incPlein++;
-				}
-				else {
-					if (incPlein > 2) {
-						score += incPlein;
-						System.out.println(this.affScore(posText, pos, incPlein, carteVictoire.affPlein(), incPlein));
+					
+					// Compte formes
+					if (carte.getForme() == carteVictoire.getForme()) {
+						incForme++;
 					}
-					incPlein=0;
-				}	
+					else {
+						if (incForme>1) {
+							score += incForme - 1;
+							System.out.println(this.affScore(pos, i, incForme, carteVictoire.affForme(), incForme - 1));
+						}
+						incForme=0;
+					}
+					
+					
+					// Compte plein
+					if (carte.getPlein() == carteVictoire.getPlein()) {
+						incPlein++;
+					}
+					else {
+						if (incPlein > 2) {
+							score += incPlein;
+							System.out.println(this.affScore(pos, i, incPlein, carteVictoire.affPlein(), incPlein));
+						}
+						incPlein=0;
+					}	
+				}
 			}
-		}
-		//fin de ligne ou colonne
-		if (incCouleur>2) {
-			score += incCouleur + 1;
-			System.out.println(this.affScore(posText, pos, incCouleur, carteVictoire.affCouleur(), incCouleur + 1));
-		}
-		
-		if (incForme>1) {
-			score += incForme - 1;
-			System.out.println(this.affScore(posText, pos, incForme, carteVictoire.affForme(), incForme - 1));
-		}
-		
-		if (incPlein > 2) {
-			score += incPlein;
-			System.out.println(this.affScore(posText, pos, incPlein, carteVictoire.affPlein(), incPlein));
+			//fin de ligne ou colonne
+			if (incCouleur>2) {
+				score += incCouleur + 1;
+				System.out.println(this.affScore(pos, i, incCouleur, carteVictoire.affCouleur(), incCouleur + 1));
+			}
+			
+			if (incForme>1) {
+				score += incForme - 1;
+				System.out.println(this.affScore(pos, i, incForme, carteVictoire.affForme(), incForme - 1));
+			}
+			
+			if (incPlein > 2) {
+				score += incPlein;
+				System.out.println(this.affScore(pos, i, incPlein, carteVictoire.affPlein(), incPlein));
+			}
 		}
 		
 		return score;
@@ -143,21 +151,6 @@ public class Score implements ScoreVisitor{
 			plateau.put(positionCarteVictoire, this.carteVictoire.get(i));
 		}
 	}
-	
-	
-	public int compterScore(int i) {
-		Carte carteVictoire = this.carteVictoire.get(i);
-		placerCarteVictoire(i);
-		
-		
-		for (i=-5;i<=5;i++) {
-			int score = this.compterScoreLigneColonne(carteVictoire,i ,true); // compte le score sur les lignes
-			score += this.compterScoreLigneColonne(carteVictoire,i ,false); // compte le score sur les colonnes
-		}
-		
-		return score;
-	}
-	
 	
 	//Visiteur
 	@Override
