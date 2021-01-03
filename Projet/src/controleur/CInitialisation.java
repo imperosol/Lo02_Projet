@@ -1,5 +1,6 @@
 package controleur;
 
+import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -9,8 +10,9 @@ import javax.swing.JFrame;
 import javax.swing.JList;
 
 import modele.Partie;
+import vue.InterfaceJeu;
 
-public class Initialisation {
+public class CInitialisation {
 	
 	private JList list_1;
 	private JList list_2;
@@ -20,7 +22,7 @@ public class Initialisation {
 	private JButton Bouton;
 	
 
-	public Initialisation(JList list1,JList list2,JList list3,JList list4,JCheckBox modeAvancé,JButton bouton, JFrame frame) {
+	public CInitialisation(JList list1,JList list2,JList list3,JList list4,JCheckBox modeAvancé,JButton bouton, JFrame frame) {
 		
 		this.list_1=list1;
 		this.list_2=list2;
@@ -44,9 +46,15 @@ public class Initialisation {
 				frame.dispose();
 				
 				Partie partie = new Partie(Plateau,modeAvance,Joueur);
-				partie.jouerPartie();
-				
-
+				EventQueue.invokeLater(new Runnable() {
+					public void run() {
+						try {
+							InterfaceJeu window = new InterfaceJeu(partie);
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+					}
+				});
 			}
 		});
 	}

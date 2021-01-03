@@ -5,10 +5,10 @@ import java.util.*;
 import modele.*;
 import modele.joueur.Joueur;
 
-public class Controleur {
+public class CInterfaceJeu {
 	private Partie partie;
 	
-	public Controleur(Partie partie) {
+	public CInterfaceJeu(Partie partie) {
 		this.partie = partie;
 		
 				

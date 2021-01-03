@@ -6,7 +6,7 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JToggleButton;
 
-import controleur.Controleur;
+import controleur.CInterfaceJeu;
 import modele.*;
 import modele.joueur.Joueur;
 
@@ -41,7 +41,7 @@ public class InterfaceJeu implements ActionListener,Observer{
 
 	
 	Partie partie;
-	Controleur controleur;
+	CInterfaceJeu controleur;
 	private JPanel labelJoueur;
 	private JPanel labelPlateau;
 	private JFrame frame;
@@ -77,39 +77,28 @@ public class InterfaceJeu implements ActionListener,Observer{
 	/**
 	 * Launch the application.
 	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					InterfaceJeu window = new InterfaceJeu();
-					window.frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
 
 	/**
 	 * Create the application.
 	 * @throws IOException 
 	 */
-	public InterfaceJeu() throws IOException {
-		initialize();
+	public InterfaceJeu(Partie partie) throws IOException {
+		initialize(partie);
+		this.frame.setVisible(true);
 	}
 
 	/**
 	 * Initialize the contents of the frame.
 	 * @throws IOException 
 	 */
-	private void initialize() throws IOException {
+	private void initialize(Partie partie) throws IOException {
 		List<Boolean> IAJoueur = new ArrayList<Boolean>();
 		IAJoueur.add(false);
 		IAJoueur.add(false);;
 		
 		//Création partie + ajout observeurs
 		
-		partie = new Partie(Context.triangle,false,false,IAJoueur);
+		this.partie = partie;
 		partie.addObserver(this);
 		
 		positionCarteVictoire = partie.getPositionCarteVictoire();
@@ -121,7 +110,6 @@ public class InterfaceJeu implements ActionListener,Observer{
 		}
 		
 		contextPlateau = partie.getContextPlateau();
-		System.out.println(contextPlateau);
 		
 		/*
 		 * création fenêtre
@@ -151,7 +139,7 @@ public class InterfaceJeu implements ActionListener,Observer{
 		labelPlateau = new JPanel();
 		frame.getContentPane().add(labelPlateau, BorderLayout.WEST);
 		
-		controleur = new Controleur(partie);
+		controleur = new CInterfaceJeu(partie);
 		
 		panelJoueur = new JPanel();
 		frame.getContentPane().add(panelJoueur, BorderLayout.NORTH);
@@ -395,7 +383,8 @@ public class InterfaceJeu implements ActionListener,Observer{
 		int minWidth = partie.getMinWidthPlateau();
 		int minHeight = partie.getMinHeightPlateau();
 		Map<List<Integer>,Carte> plateau = partie.getPlateau();
-		Map<List<Integer>,Boolean> plateauBool = partie.getPlateauBool();	
+		Map<List<Integer>,Boolean> plateauBool = partie.getPlateauBool();
+		System.out.println(contextPlateau);
 		
 		//Si on a un plateau rectangle et que la largeur ou longueur est mininimale
 		if (contextPlateau == Context.rectangle) {

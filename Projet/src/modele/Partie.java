@@ -39,16 +39,16 @@ public class Partie extends Observable implements ScoreInterface {
 	private Pioche pioche;
 	
 	
-	public Partie(Context contextePlateau,Boolean modeAvance,Boolean joueur3, List<Boolean> IA) {
+	public Partie(Context contextPlateau,Boolean modeAvance,Boolean joueur3, List<Boolean> IA) {
 
 		
 		List<Integer> position;
 
 		//initialistation plateau
-		if (contextePlateau == Context.rectangle) {
+		if (contextPlateau == Context.rectangle) {
 			this.context = new ContextPlateau(new PlateauRectangle());
 		}
-		else if (contextePlateau == Context.triangle) {
+		else if (contextPlateau == Context.triangle) {
 			this.context = new ContextPlateau(new PlateauTriangle());
 		}
 		else {
@@ -58,6 +58,8 @@ public class Partie extends Observable implements ScoreInterface {
 			this.context = new ContextPlateau(new PlateauVariante(position));
 			this.positionCarteVictoire = position;
 		}
+		this.contextPlateau = contextPlateau;
+		System.out.println(contextPlateau);
 
 		//initialisation pioche
 		this.pioche = new Pioche();
@@ -94,9 +96,11 @@ public class Partie extends Observable implements ScoreInterface {
 		//initialistation plateau
 				if (Plateau == "rectangulaire") {
 					this.context = new ContextPlateau(new PlateauRectangle());
+					this.contextPlateau = Context.rectangle;
 				}
 				else if (Plateau == "triangulaire") {
 					this.context = new ContextPlateau(new PlateauTriangle());
+					this.contextPlateau = Context.triangle;
 				}
 				else {
 					position = new ArrayList<Integer>();
@@ -104,6 +108,7 @@ public class Partie extends Observable implements ScoreInterface {
 					position.add(0);
 					this.context = new ContextPlateau(new PlateauVariante(position));
 					this.positionCarteVictoire = position;
+					this.contextPlateau = Context.variante;
 				}
 				
 				this.nbrJoueur=0;

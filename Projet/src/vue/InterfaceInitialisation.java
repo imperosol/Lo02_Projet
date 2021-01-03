@@ -9,7 +9,7 @@ import javax.swing.JList;
 import java.awt.Color;
 import javax.swing.ListSelectionModel;
 
-import controleur.Initialisation;
+import controleur.CInitialisation;
 
 import javax.swing.JCheckBox;
 import javax.swing.JTextPane;
@@ -17,7 +17,7 @@ import javax.swing.JButton;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 
-public class CreationPartie {
+public class InterfaceInitialisation {
 
 	private JFrame frame;
 	private final Action action = new SwingAction();
@@ -39,7 +39,7 @@ public class CreationPartie {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					CreationPartie window = new CreationPartie();
+					InterfaceInitialisation window = new InterfaceInitialisation();
 					window.frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -51,9 +51,9 @@ public class CreationPartie {
 	/**
 	 * Create the application.
 	 */
-	public CreationPartie() {
+	public InterfaceInitialisation() {
 		initialize();
-		new Initialisation(list_1,list_2,list_3,list_4,ModeAvancé,bouton,frame);
+		new CInitialisation(list_1,list_2,list_3,list_4,ModeAvancé,bouton,frame);
 	}
 
 	/**
