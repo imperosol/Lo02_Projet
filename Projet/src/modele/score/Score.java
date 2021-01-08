@@ -46,6 +46,7 @@ public class Score implements ScoreVisitor{
 		
 		int score = this.compterScoreLigneColonne(carteVictoire, 0); // compte le score sur les lignes
 		score += this.compterScoreLigneColonne(carteVictoire, 1); // compte le score sur les colonnes
+		System.out.println("Score joueur " + (i + 1) + " : " + score + "\n" ); 
 		
 		return score;
 	}

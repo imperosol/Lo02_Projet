@@ -10,7 +10,7 @@ import java.util.Set;
 import modele.Carte;
 import modele.Partie;
 
-public class JoueurReel implements StratégyJoueur{
+public class JoueurReel implements StrategyJoueur{
 	
 	private int numCarteJouee = -1;
 	private Joueur joueur;
@@ -18,71 +18,16 @@ public class JoueurReel implements StratégyJoueur{
 	
 	private Scanner entreeJoueur = new Scanner(System.in);
 	
+	public JoueurReel(Partie partie) {
+		this.partie = partie;
+	}
+	
 	public void jouer(Joueur joueur,Partie partie) {
-		this.joueur=joueur;
-		this.partie=partie;
 		
-		
-		
-
-		joueur.getCarteVictoire();
-		int action=-1;
-		Boolean aPlacerCarte=true;
-		Boolean aBougerCarte=true;
-		
-		while (action !=2) {
-			
-			partie.ouAjouterCarte();
-			partie.afficherPlateau();
-			if (aPlacerCarte) {
-				System.out.println("0 : placer une carte");
-			}
-			
-			if (aBougerCarte) {
-				System.out.println("1 : bouger une carte");
-			}
-			
-			System.out.println("2 : terminer le tour");
-			
-			do {
-				System.out.print("Action : ");
-				action = this.entreeJoueur.nextInt();
-					
-			}while (action < 0||action>2);
-			
-			switch (action) {
-			case 0:
-				if(aPlacerCarte) {
-					placerCarte();
-					aPlacerCarte = false;
-				}
-				else{
-					System.out.println("Tu as déjà placé une carte");
-				}
-				break;
-			
-			case 1:
-				if(aBougerCarte) {
-					bougerCarte();
-					aBougerCarte=false;
-				}
-				else{
-					System.out.println("Tu as déjà bougé une carte");
-				}
-				break;
-			case 2:
-				if(aPlacerCarte) {
-					System.out.println("Tu dois placer une carte avant de terminer ton tour");
-					action=-1;
-					
-				}
-				break;
-			}
-		}
 	}
 	
 	
-	public void placerCarte() {
+	public void placerCarte(Joueur joueur) {
 		int action;
 		int i = 1;
 		Iterator<Carte> it = joueur.getMain().iterator();
@@ -123,7 +68,7 @@ public class JoueurReel implements StratégyJoueur{
 	}
 	
 	
-	public void bougerCarte() {
+	public void bougerCarte(Joueur joueur) {
 		Map<List<Integer>,Carte> plateau = partie.getPlateau();
 		List<Integer>[] listeDeCléUtilisé = (List<Integer>[]) plateau.keySet().toArray(new List[0]);
 		int action;

@@ -4,35 +4,25 @@ import java.awt.*;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
-import javax.swing.JToggleButton;
 
 import controleur.CInterfaceJeu;
 import modele.*;
 import modele.joueur.Joueur;
 
-import javax.swing.JLayeredPane;
-import javax.swing.JMenuBar;
-
-import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Observable;
 import java.util.Observer;
 
-import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
-import javax.swing.Box;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import javax.swing.SwingConstants;
-import javax.swing.border.Border;
 import javax.swing.border.EtchedBorder;
 import javax.swing.JLabel;
 
@@ -40,10 +30,9 @@ import javax.swing.JLabel;
 public class InterfaceJeu implements ActionListener,Observer{
 
 	
-	Partie partie;
-	CInterfaceJeu controleur;
-	private JPanel labelJoueur;
-	private JPanel labelPlateau;
+	private Partie partie;
+	private CInterfaceJeu controleur;
+	private JPanel panelPlateau;
 	private JFrame frame;
 	private List<ButtonCarteVide> listeButtonVide = new ArrayList<ButtonCarteVide>();
 	private List<ButtonCarteVide> listeButtonVideLarge = new ArrayList<ButtonCarteVide>();
@@ -62,10 +51,10 @@ public class InterfaceJeu implements ActionListener,Observer{
 	
 	//Bouton de fin de tour
 	private JButton finTour;
-	
-	//panel pour les cartes en main
-	private JPanel labelMain;
 	private List<JPanel> listPanelMain;
+	
+	//panel pour le score
+	private List<JPanel> listPanelScore = new ArrayList<JPanel>();
 	
 	//panel et label pour la crate victoire
 	private JPanel jPCVictoire;
@@ -73,6 +62,8 @@ public class InterfaceJeu implements ActionListener,Observer{
 	
 	//panel vide
 	private JLabel jLBlankMain;
+	private JPanel panelScore;
+	private JPanel panel;
 
 	/**
 	 * Launch the application.
@@ -82,6 +73,27 @@ public class InterfaceJeu implements ActionListener,Observer{
 	 * Create the application.
 	 * @throws IOException 
 	 */
+	public static void initializeInterface(Partie partie) {
+		Thread t = new Thread();
+		t.start();
+	}
+	
+	
+	
+	public static void runInterface(Partie partie) {
+		
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				try {
+					InterfaceJeu window = new InterfaceJeu(partie);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
+	}
+
+	
 	public InterfaceJeu(Partie partie) throws IOException {
 		initialize(partie);
 		this.frame.setVisible(true);
@@ -114,30 +126,13 @@ public class InterfaceJeu implements ActionListener,Observer{
 		/*
 		 * création fenêtre
 		 */
+		
 		frame = new JFrame();
 		frame.setBounds(100, 100, 1000, 700);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
-		labelJoueur = new JPanel();
-		frame.getContentPane().add(labelJoueur, BorderLayout.SOUTH);
-		labelJoueur.setLayout(new BorderLayout(0, 0));
-		
-		
-		/*
-		 * création panel pour la main
-		 */
-		
-		labelMain = new JPanel();
-		labelJoueur.add(labelMain, BorderLayout.CENTER);
-		GridBagLayout gridMain = new GridBagLayout();
-		gridMain.columnWidths = new int[]{0};
-		gridMain.rowHeights = new int[]{0};
-		gridMain.columnWeights = new double[]{};
-		gridMain.rowWeights = new double[]{};
-		labelMain.setLayout(gridMain);
-		
-		labelPlateau = new JPanel();
-		frame.getContentPane().add(labelPlateau, BorderLayout.WEST);
+		panelPlateau = new JPanel();
+		frame.getContentPane().add(panelPlateau, BorderLayout.WEST);
 		
 		controleur = new CInterfaceJeu(partie);
 		
@@ -197,6 +192,31 @@ public class InterfaceJeu implements ActionListener,Observer{
 		JPanel panel_2 = new JPanel();
 		frame.getContentPane().add(panel_2, BorderLayout.SOUTH);
 		
+		
+		panelScore = new JPanel();
+		panelScore.setPreferredSize(new Dimension(150,150));
+		
+		int nbJoueur = partie.getJoueur().size();
+		panelScore.setLayout(new GridBagLayout());
+		
+		GridBagConstraints gbc_txtMain2 = new GridBagConstraints();
+		gbc_txtMain2.insets = new Insets(0, 10, 10, 5);
+		gbc_txtMain2.gridx = 8;
+		gbc_txtMain2.gridy = 0;
+		panelJoueur.add(panelScore,gbc_txtMain2 );
+		
+		JPanel panel;
+		
+		for (int i=0;i<nbJoueur;i++) {
+			panel = new JPanel();
+			GridBagConstraints gbc_panel = new GridBagConstraints();
+			gbc_panel.insets = new Insets(0, 0, 5, 5);
+			gbc_panel.fill = GridBagConstraints.HORIZONTAL;
+			gbc_panel.gridx = 0;
+			gbc_panel.gridy = i;
+			panelScore.add(panel, gbc_panel);
+			listPanelScore.add(panel);
+		}
 	
 		//Ajoute carte Victoire
 		if (partie.getModeAvance()) {
@@ -206,8 +226,6 @@ public class InterfaceJeu implements ActionListener,Observer{
 			jPCVictoire.add(labelCV);
 		}
 	}
-	
-
 	
 
 	// Gestion des boutons
@@ -245,7 +263,7 @@ public class InterfaceJeu implements ActionListener,Observer{
 		
 		//Si le bouton fin du tour est pressé
 		if (src instanceof JButton) {
-			if (partie.getJoueurEnCours().getAPlaceCarte()) {
+			if ((partie.getJoueurEnCours().getAPlaceCarte()) && (!partie.getFin())) {
 				controleur.nouveauTour();
 			}
 			else {
@@ -327,6 +345,19 @@ public class InterfaceJeu implements ActionListener,Observer{
 		
 	}
 	
+	public void setScore() {
+		List<Integer> listScore = partie.getListScore();
+		Iterator<Integer> it = listScore.iterator();
+		int nbJoueur = partie.getJoueur().size();
+		for (int i=0;i<nbJoueur;i++) {
+			JPanel panelScore = listPanelScore.get(i);
+			JLabel labelScore = new JLabel("Score du joueur " + (i+1) + " : " + it.next());
+			panelScore.add(labelScore);
+			panelScore.updateUI();
+		}
+		
+	}
+	
 	/* réinitialise l'affichage pour correspondre au joueurEnCours */
 	public void resetJoueur() {
 		Joueur joueurEnCours = partie.getJoueurEnCours();
@@ -341,11 +372,7 @@ public class InterfaceJeu implements ActionListener,Observer{
 	
 	/* réinitialise la main, le i désigne la position d'une carte déjà utilisé */
 	public void resetMain (int vide) {
-		labelMain.removeAll();
 		List<Carte> main = partie.getJoueurEnCours().getMain();
-		Dimension dimMain = new Dimension(100,150);
-
-		labelMain.setLayout(new GridLayout(1, main.size(), 50, 0));
 		ButtonCarte bouton;
 		Iterator<Carte> it = main.iterator();
 		int i=0;
@@ -355,6 +382,7 @@ public class InterfaceJeu implements ActionListener,Observer{
 				JPanel panelMain = listPanelMain.get(i);
 				panelMain.removeAll();
 				panelMain.add(bouton);
+				panelMain.updateUI();
 			}
 			else {
 				it.next();
@@ -362,20 +390,21 @@ public class InterfaceJeu implements ActionListener,Observer{
 				panelMain.removeAll();
 				JLabel labelMain = new JLabel();
 				labelMain.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED));
-				labelMain.setPreferredSize(dimMain);
-				panelMain.add(labelMain);				
+				labelMain.setPreferredSize(new Dimension(100,150));
+				panelMain.add(labelMain);	
+				panelMain.updateUI();
 			}
 			i++;
 		}
 		
 		//rafraichit l'affichage
-		labelMain.updateUI();
+		
 	}
 	
 	/* permet de recréer le plateau */
 	public void resetPlateau() {
 		//nettoie l'ancien plateau et la liste de boutons
-		labelPlateau.removeAll();
+		panelPlateau.removeAll();
 		listeButtonVide.clear();
 		
 		int width = partie.getWidthPlateau();
@@ -384,7 +413,6 @@ public class InterfaceJeu implements ActionListener,Observer{
 		int minHeight = partie.getMinHeightPlateau();
 		Map<List<Integer>,Carte> plateau = partie.getPlateau();
 		Map<List<Integer>,Boolean> plateauBool = partie.getPlateauBool();
-		System.out.println(contextPlateau);
 		
 		//Si on a un plateau rectangle et que la largeur ou longueur est mininimale
 		if (contextPlateau == Context.rectangle) {
@@ -399,11 +427,11 @@ public class InterfaceJeu implements ActionListener,Observer{
 		}
 		
 		
-		//labelPlateau.setLayout(new GridLayout(10, 1, 0, 0));
-		labelPlateau.setLayout(new GridLayout(height, width, 0, 0));
+		//panelPlateau.setLayout(new GridLayout(10, 1, 0, 0));
+		panelPlateau.setLayout(new GridLayout(height, width, 0, 0));
 		
 		//crée un nouveau plateau de la taille spécifiée
-		Dimension dimCarte = labelPlateau.getSize();
+		Dimension dimCarte = panelPlateau.getSize();
 
 		//System.out.println("dimension plateau origine =" + dimCarte);
 		//System.out.println("width : " + width + " | height : " + height);
@@ -411,45 +439,45 @@ public class InterfaceJeu implements ActionListener,Observer{
 		dimCarte.setSize((int) (dimCarte.getHeight()*2*width)/(3*height),dimCarte.getHeight());
 				
 		if (dimCarte.getHeight() != 0) {
-			labelPlateau.setMinimumSize(dimCarte);
-			labelPlateau.setMaximumSize(dimCarte);
+			panelPlateau.setMinimumSize(dimCarte);
+			panelPlateau.setMaximumSize(dimCarte);
 		}
 		
 		dimCarte.setSize(dimCarte.getWidth()/width, dimCarte.getHeight()/height);
 		
 		//parcourt toutes les cases du plateau et regarde le contenu de la case
 		for (int i = height+minHeight-1;i>=minHeight;i--) {
-			for (int j = width+minWidth-1;j>=minWidth;j--) {
+			for (int j = minWidth;j<=width+minWidth-1;j++) {
 				List<Integer> position = new ArrayList<Integer>();
 				position.add(i);
 				position.add(j);
 				
 				// si la case contient une carte
 				if (plateau.containsKey(position)) {
-					labelPlateau.add(buttonCartePlateau(plateau.get(position),position,dimCarte));
+					panelPlateau.add(buttonCartePlateau(plateau.get(position),position,dimCarte));
 				}
 				
 				// si on peut ajouter une carte sur la position
 				else if (plateauBool.containsKey(position)) {
 					
-					labelPlateau.add(buttonCarteVide(position));
+					panelPlateau.add(buttonCarteVide(position));
 				}
 				
 				// si la case contient la carte victoire (dans le cas du plateau variante)
 				else if (position.equals(positionCarteVictoire)) {
-					labelPlateau.add(buttonCarteVictoire(position));
+					panelPlateau.add(buttonCarteVictoire(position));
 				}
 				
 				//si la case ne contient rien
 				else {
 					//labelPlateau.add(Box.createGlue());
-					labelPlateau.add(buttonCarteVideLarge(position));
+					panelPlateau.add(buttonCarteVideLarge(position));
 				}
 			}
 		}
 		
 		// update l'affichage des plateaux
-		labelPlateau.updateUI();
+		panelPlateau.updateUI();
 	}
 	
 	
@@ -591,18 +619,27 @@ public class InterfaceJeu implements ActionListener,Observer{
 				resetPlateau();
 				resetUpdatePlateau(false);
 			}
-			if (etat == Etat.update) {
+			else if (etat == Etat.update) {
 				updatePlateau();
 			}
-			else {
+			else if (etat == Etat.resetUpdate) {
 				resetUpdatePlateau(false);
 				resetUpdatePlateauLarge(false);
+			}
+			else if (etat == Etat.score) {
+				setScore();
 			}
 			
 		}
 		
 		if (observable instanceof Joueur) {
-			resetJoueur();
+			Etat etat = (Etat) arg;
+			if (etat == Etat.main) {
+				resetMain(partie.getJoueurEnCours().getNumCarteJouee());
+			}
+			else {
+				resetJoueur();
+			}
 		}
 		
 	}

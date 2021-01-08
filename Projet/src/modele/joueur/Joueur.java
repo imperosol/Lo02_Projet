@@ -11,13 +11,14 @@ import modele.Partie;
 import modele.Pioche;
 import modele.score.ScoreInterface;
 import modele.score.ScoreVisitor;
+import vue.Etat;
 
 @SuppressWarnings("deprecation")
 public class Joueur extends Observable implements ScoreInterface {
 	
 	private Carte carteVictoire;
 	private int numeroJoueur;
-	private StratégyJoueur stratégie ; // pour pattern stratégie
+	private StrategyJoueur strategy ; // pour pattern strategy
 	private List<Carte> main;
 	private Pioche pioche;
 	private Partie partie;
@@ -26,12 +27,13 @@ public class Joueur extends Observable implements ScoreInterface {
 	private boolean aPlaceCarte; //true si a déjà placé une carte pendant son tour
 	private boolean aBougeCarte; //true si a déjà bougé une carte pendant son tour
 	
-	public Joueur(int numeroJoueur,  StratégyJoueur strategie, Partie partie, Pioche pioche) { 
+	public Joueur(int numeroJoueur,  StrategyJoueur strategy, Partie partie, Pioche pioche) { 
 		this.numeroJoueur = numeroJoueur;
 		
-		this.stratégie = strategie;	
+		this.strategy = strategy;	
 		this.pioche = pioche;
 		this.partie = partie;
+		
 		if (partie.getModeAvance()==false) {
 			this.carteVictoire = pioche.piocherCarte();
 		}
@@ -86,7 +88,7 @@ public class Joueur extends Observable implements ScoreInterface {
 		//int i = stratégie.getDerniereCarte();
 		
 		if (carte != null) {
-			if (this.stratégie instanceof JoueurReel) {
+			if (this.strategy instanceof JoueurReel) {
 				System.out.println("tu as pioché : " + carte);
 			}
 			
@@ -136,6 +138,14 @@ public class Joueur extends Observable implements ScoreInterface {
 		return main.size();
 	}
 	
+	public void bougerCarte() {
+		strategy.bougerCarte(this);
+	}
+	
+	public void placerCarte() {
+		strategy.placerCarte(this);
+	}
+	
 	public void bougerCarteJoueur(List<Integer> positionCarte, List<Integer> positionFinale) {
 		aBougeCarte = true;
 		partie.bougerCarte(positionCarte, positionFinale);
@@ -145,9 +155,12 @@ public class Joueur extends Observable implements ScoreInterface {
 		numCarteJouee = main.indexOf(carte);
 		aPlaceCarte = true;
 		partie.ajouterCarte(position, carte);
+		
+		setChanged();
+		notifyObservers(Etat.main);
 	}
 	
-	public void  affPlateau() {
+	public void affPlateau() {
 		partie.afficherPlateau();
 	}
 	
@@ -158,12 +171,10 @@ public class Joueur extends Observable implements ScoreInterface {
 		}
 	
 		partie.ouAjouterCarte();
-		stratégie.jouer(this,partie);
-		affPlateau();
+		strategy.jouer(this,partie);
 		
-		if (partie.getModeAvance()==true) {
-			piocherCarte();
-		}		
+		finTour();
+		partie.nouveauTour();
 	}
 	
 	public int getNumJoueur() {
@@ -178,8 +189,21 @@ public class Joueur extends Observable implements ScoreInterface {
 		return aPlaceCarte;
 	}
 
+	public int getNumCarteJouee() {
+		return numCarteJouee;
+	}
+	
 	public String toString() {
 		return "joueur " + this.numeroJoueur;
+	}
+	
+	public boolean getIA() {
+		if (this.strategy instanceof IAAleatoire) {
+			return true;
+		}
+		else {
+			return false;
+		}
 	}
 	
 	/* Visteur */

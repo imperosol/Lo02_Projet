@@ -3,9 +3,13 @@ package vue;
 import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Scanner;
 
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.JPanel;
+
 import java.awt.Color;
 import javax.swing.ListSelectionModel;
 
@@ -28,6 +32,8 @@ public class InterfaceInitialisation {
 	private JList list_4;
 	private JCheckBox ModeAvancé;
 	private JButton bouton;
+	
+
 
 	
 	/**
@@ -65,7 +71,8 @@ public class InterfaceInitialisation {
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
 		
-		String[] J1 = {"Humain","IA"};
+		String[] J1 = {"Humain"};
+		String[] J2 = {"Humain","IA"};
 		String[] J3 = {"Humain","IA","Désactivé"};
 		
 		list_3 = new JList(J3);
@@ -86,7 +93,7 @@ public class InterfaceInitialisation {
 		list_1.setBounds(205, 245, 52, 78);
 		frame.getContentPane().add(list_1);
 		
-		list_2 = new JList(J1);
+		list_2 = new JList(J2);
 		list_2.setToolTipText("");
 		list_2.setSelectedIndex(0);
 		list_2.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -108,33 +115,27 @@ public class InterfaceInitialisation {
 		frame.getContentPane().add(list_4);
 		
 		
-		JTextPane txtpnJoueur = new JTextPane();
-		txtpnJoueur.setText("Joueur 1");
+		JLabel txtpnJoueur = new JLabel("Joueur 1");
 		txtpnJoueur.setBounds(205, 200, 52, 20);
 		frame.getContentPane().add(txtpnJoueur);
 		
-		JTextPane txtpnJoueur_1 = new JTextPane();
-		txtpnJoueur_1.setText("Joueur 2");
+		JLabel txtpnJoueur_1 = new JLabel("Joueur 2");
 		txtpnJoueur_1.setBounds(477, 200, 52, 20);
 		frame.getContentPane().add(txtpnJoueur_1);
 		
-		JTextPane txtpnJoueur_2 = new JTextPane();
-		txtpnJoueur_2.setText("Joueur 3");
+		JLabel txtpnJoueur_2 = new JLabel("Joueur 3");
 		txtpnJoueur_2.setBounds(762, 200, 52, 20);
 		frame.getContentPane().add(txtpnJoueur_2);
 		
-		JTextPane txtpnTitreDuJeu = new JTextPane();
-		txtpnTitreDuJeu.setText("Titre du jeu");
+		JLabel txtpnTitreDuJeu = new JLabel("Titre du jeu");
 		txtpnTitreDuJeu.setBounds(366, 32, 308, 20);
 		frame.getContentPane().add(txtpnTitreDuJeu);
 		
-		JTextPane txtpnPlateau = new JTextPane();
-		txtpnPlateau.setText("Plateau");
+		JLabel txtpnPlateau = new JLabel("Plateau");
 		txtpnPlateau.setBounds(338, 83, 73, 20);
 		frame.getContentPane().add(txtpnPlateau);
 		
-		JTextPane txtpnModeDeJeu = new JTextPane();
-		txtpnModeDeJeu.setText("Mode de Jeu");
+		JLabel txtpnModeDeJeu = new JLabel("Mode de Jeu");
 		txtpnModeDeJeu.setBounds(622, 83, 89, 20);
 		frame.getContentPane().add(txtpnModeDeJeu);
 		
@@ -150,6 +151,7 @@ public class InterfaceInitialisation {
 
 
 	private class SwingAction extends AbstractAction {
+		private static final long serialVersionUID = 1L;
 		public SwingAction() {
 			putValue(NAME, "SwingAction");
 			putValue(SHORT_DESCRIPTION, "Some short description");

@@ -3,12 +3,15 @@ package controleur;
 import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JList;
 
+import modele.Context;
 import modele.Partie;
 import vue.InterfaceJeu;
 
@@ -38,23 +41,13 @@ public class CInitialisation {
 					modeAvance= true;
 				}
 				
-				String Plateau = list_4.getSelectedValue().toString();
+				String plateau = list_4.getSelectedValue().toString();
 				
-
-				String[] Joueur = {list_1.getSelectedValue().toString(),list_2.getSelectedValue().toString(),list_3.getSelectedValue().toString()};
+				String[] joueur = {list_1.getSelectedValue().toString(),list_2.getSelectedValue().toString(),list_3.getSelectedValue().toString()};
 				
 				frame.dispose();
 				
-				Partie partie = new Partie(Plateau,modeAvance,Joueur);
-				EventQueue.invokeLater(new Runnable() {
-					public void run() {
-						try {
-							InterfaceJeu window = new InterfaceJeu(partie);
-						} catch (Exception e) {
-							e.printStackTrace();
-						}
-					}
-				});
+				Partie partie = new Partie(plateau,modeAvance,joueur);
 			}
 		});
 	}

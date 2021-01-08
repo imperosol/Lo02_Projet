@@ -2,10 +2,9 @@ package vue;
 
 import java.util.List;
 
-import modele.Carte;
-
 public class ButtonCarteVide extends ButtonCarte{
 
+	private static final long serialVersionUID = 1L;
 	List<Integer> position;
 	
 	public ButtonCarteVide(List<Integer> position) {
@@ -16,5 +15,4 @@ public class ButtonCarteVide extends ButtonCarte{
 	public List<Integer> getPosition(){
 		return position;
 	}
-
 }

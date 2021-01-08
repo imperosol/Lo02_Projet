@@ -11,7 +11,7 @@ import java.util.Set;
 import modele.Carte;
 import modele.Partie;
 
-public class IAAleatoire implements StratégyJoueur{
+public class IAAleatoire implements StrategyJoueur{
 	
 	int numCarteJouee = -1;
 	
@@ -91,5 +91,17 @@ public class IAAleatoire implements StratégyJoueur{
 	@Override
 	public int getDerniereCarte() {
 		return this.numCarteJouee;
+	}
+
+	@Override
+	public void placerCarte(Joueur joueur) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void bougerCarte(Joueur joueur) {
+		// TODO Auto-generated method stub
+		
 	}
 }

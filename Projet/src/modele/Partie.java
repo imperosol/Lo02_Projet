@@ -1,5 +1,6 @@
 package modele;
 
+import java.awt.EventQueue;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -8,6 +9,7 @@ import java.util.Map;
 import java.util.Observable;
 import java.util.Scanner;
 
+import controleur.InterfaceCommande;
 import modele.joueur.IAAleatoire;
 import modele.joueur.Joueur;
 import modele.joueur.JoueurReel;
@@ -16,6 +18,8 @@ import modele.score.Score;
 import modele.score.ScoreInterface;
 import modele.score.ScoreVisitor;
 import vue.Etat;
+import vue.InterfaceJeu;
+import vue.RunInterface;
 
 @SuppressWarnings("deprecation")
 public class Partie extends Observable implements ScoreInterface {
@@ -33,23 +37,30 @@ public class Partie extends Observable implements ScoreInterface {
 	private boolean modeAvance;
 	private Carte carteCachee; // Stock carte cachée
 	private List<Integer> positionCarteVictoire = null;
-	private Boolean fin;
+	private boolean fin = false;
 	private Context contextPlateau;
+	private List<Integer> listScore;
 	
 	private Pioche pioche;
 	
-	
-	public Partie(Context contextPlateau,Boolean modeAvance,Boolean joueur3, List<Boolean> IA) {
-
+	public Partie(String Plateau, Boolean ModeAvance,String[] Joueur) {
+		
+		this.modeAvance = ModeAvance;
+		
+		//initialisation pioche
+		this.pioche = new Pioche();
+		this.carteCachee = this.pioche.piocherCarte();
 		
 		List<Integer> position;
 
 		//initialistation plateau
-		if (contextPlateau == Context.rectangle) {
+		if (Plateau == "rectangulaire") {
 			this.context = new ContextPlateau(new PlateauRectangle());
+			this.contextPlateau = Context.rectangle;
 		}
-		else if (contextPlateau == Context.triangle) {
+		else if (Plateau == "triangulaire") {
 			this.context = new ContextPlateau(new PlateauTriangle());
+			this.contextPlateau = Context.triangle;
 		}
 		else {
 			position = new ArrayList<Integer>();
@@ -57,106 +68,67 @@ public class Partie extends Observable implements ScoreInterface {
 			position.add(0);
 			this.context = new ContextPlateau(new PlateauVariante(position));
 			this.positionCarteVictoire = position;
+			this.contextPlateau = Context.variante;
 		}
-		this.contextPlateau = contextPlateau;
-		System.out.println(contextPlateau);
-
-		//initialisation pioche
-		this.pioche = new Pioche();
-		this.carteCachee = this.pioche.piocherCarte();
-		
-		//initialisation joueurs
-		this.modeAvance = modeAvance;
+				
+		this.nbrJoueur=0;
 		this.joueur = new ArrayList<Joueur>();
-		
-		nbrJoueur = (joueur3) ? 3 : 2;
-		
-		for (int i=0;i<nbrJoueur;i++) {
-			if (IA.get(i)) {
-				this.joueur.add(new Joueur(i+1,new IAAleatoire() , this, this.pioche)); 
+
+		for (int i=0;i<3;i++) {
+			if (Joueur[i]=="Humain") {
+				this.joueur.add(new Joueur(i+1,new JoueurReel(this) , this, this.pioche));
+				nbrJoueur++;
 			}
-			else {
-				this.joueur.add(new Joueur(i+1,new JoueurReel() , this, this.pioche));
+		
+			if (Joueur[i]=="IA") {
+				this.joueur.add(new Joueur(i+1,new IAAleatoire() , this, this.pioche)); 
+				nbrJoueur++;
 			}
 		}
 		fin = false;
-		joueurEnCours = joueur.get(0);
-	}
+		joueurEnCours = joueur.get(joueur.size()-1);
 	
-	public Partie(String Plateau, Boolean ModeAvance,String[] Joueur) {
-		
-		this.modeAvance = ModeAvance;
-		
-		//initialisation pioche
-				this.pioche = new Pioche();
-				this.carteCachee = this.pioche.piocherCarte();
-		
-		List<Integer> position;
-
-		//initialistation plateau
-				if (Plateau == "rectangulaire") {
-					this.context = new ContextPlateau(new PlateauRectangle());
-					this.contextPlateau = Context.rectangle;
-				}
-				else if (Plateau == "triangulaire") {
-					this.context = new ContextPlateau(new PlateauTriangle());
-					this.contextPlateau = Context.triangle;
-				}
-				else {
-					position = new ArrayList<Integer>();
-					position.add(-1);
-					position.add(0);
-					this.context = new ContextPlateau(new PlateauVariante(position));
-					this.positionCarteVictoire = position;
-					this.contextPlateau = Context.variante;
-				}
-				
-				this.nbrJoueur=0;
-				this.joueur = new ArrayList<Joueur>();
-
-				for (int i=0;i<3;i++) {
-					if (Joueur[i]=="Humain") {
-						this.joueur.add(new Joueur(i+1,new JoueurReel() , this, this.pioche));
-						nbrJoueur++;
-					}
-					
-					if (Joueur[i]=="IA") {
-						this.joueur.add(new Joueur(i+1,new IAAleatoire() , this, this.pioche)); 
-						nbrJoueur++;
-						
-					
-					}
-				}
-				fin = false;
-				joueurEnCours = joueur.get(0);
-		
+		InterfaceJeu.runInterface(this);
+		InterfaceCommande Commande = new InterfaceCommande(this);
 	}
-	
 	
 	
 	
 	public void nouveauTour() {
 		if (!(pioche.piocheVide())) {
+			System.out.println("\n--------NOUVEAU TOUR--------\n");
 			joueurEnCours.finTour();
 			changerJoueur();
+			setChanged();
+			notifyObservers(Etat.reset);
 		}
 		else if (modeAvance){
 			if (joueurEnCours.tailleMain()>1) {
+				System.out.println("\n--------NOUVEAU TOUR--------\n");
 				joueurEnCours.finTour();
 				changerJoueur();
+				setChanged();
+				notifyObservers(Etat.reset);
 			}
 			else {
 				determinerCarteVictoire();
+				Score score = new Score(this);
+				listScore = score.scorePartie();
+				
+				setChanged();
+				notifyObservers(Etat.score);
 				fin = true;
 			}
 		}
 		else {
 			joueurEnCours.finTour();
+			Score score = new Score(this);
+			listScore = score.scorePartie();
+			
+			setChanged();
+			notifyObservers(Etat.score);
 			fin = true;
 		}
-		
-		setChanged();
-		notifyObservers(Etat.reset);
 	}
 	
 	public void changerJoueur() {
@@ -164,7 +136,12 @@ public class Partie extends Observable implements ScoreInterface {
 		int numJoueur = joueurEnCours.getNumJoueur();
 		numJoueur = numJoueur%nbrJoueur;
 		joueurEnCours = joueur.get(numJoueur);
-		joueurEnCours.debutTour();
+		if (joueurEnCours.getIA()) {
+			joueurEnCours.tour();
+		}
+		else {
+			joueurEnCours.debutTour();
+		}
 	}
 	
 	public void determinerCarteVictoire() {
@@ -176,38 +153,7 @@ public class Partie extends Observable implements ScoreInterface {
         }
 	}
 	
-	public void jouerPartie() {
-	    int i=0; int j;
-	    Joueur joueurEnCours;
-	    // tant que la pioche n'est pas vide,on joue la partie
-	    while (!(this.pioche.piocheVide())) {
-	        joueurEnCours = this.joueur.get(i);
-	        tour(joueurEnCours);
-	        i = (i + 1) % nbrJoueur; // passage au joueur suivant
-	    }
-	                
-	    /*Si on est en mode avancé, on réalise en plus les opérations suivantes*/
-	    if (this.modeAvance) {
-	    	List<Carte> main;
-	        /*On ajoute deux cartes en plus pour chaque joueur*/
-	        for (j = 0; j<2; j++){
-	            for (i = 0; i<nbrJoueur; i++){
-	                joueurEnCours = this.joueur.get(i);
-	                tour(joueurEnCours);
-	            }
-	        }
-	        /*Quand tous les joueurs ont reçu leurs cartes supplémentaires, on détermine la carte victoire de chaque joueur*/
-	        determinerCarteVictoire();
-	    }
-	    Score score = new Score(this);
-	    score.scorePartie();
-	}
-	
-	
-	public void tour(Joueur joueur) {
-        System.out.println("\ntour du " + joueur + "\n");
-        joueur.tour();
-	}
+
 
 	
 	/*Méthodes du plateau via un pattern strategy*/
@@ -276,6 +222,8 @@ public class Partie extends Observable implements ScoreInterface {
 		
 		setChanged();
 		notifyObservers(Etat.reset);
+		setChanged();
+		notifyObservers(Etat.commande);
 	}
 	
 	
@@ -296,6 +244,8 @@ public class Partie extends Observable implements ScoreInterface {
 		
 		setChanged();
 		notifyObservers(Etat.reset);
+		setChanged();
+		notifyObservers(Etat.commande);
 	}
 	
 	
@@ -350,26 +300,17 @@ public class Partie extends Observable implements ScoreInterface {
 		return contextPlateau;
 	}
 	
+	public List<Integer> getListScore(){
+		return listScore;
+	}
 	
+	public boolean getFin(){
+		return fin;
+	}
 	/*visiteur*/
 	
 	@Override
 	public void accept(ScoreVisitor visitor) {
 		 visitor.visit(this);
-	}
-		
-	public static void main(String[] args) {
-
-		
-		/* Partie(Context,modeAvance)
-		 * 
-		 * Context permet de déterminer le type de plateau, on a :
-		 * - Context.rectangle pour le plateau rectangle
-		 * - Context.triangle pour le plateau triangle
-		 * - Context.variante pour le plateau variante (dans ce plateau deviendra la carte victoire du joueur à la fin de la partie)
-		 * 
-		 * si modeAvance = true alors on est en mode anavcé, sinon on est en mode normal
-		 */
-
 	}
 }

@@ -1,17 +1,13 @@
 package vue;
 
-import java.awt.Button;
 import java.awt.Dimension;
 import java.awt.Image;
 import java.io.File;
 import java.io.IOException;
-import java.util.List;
 
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JToggleButton;
-
-import modele.Carte;
 
 public class ButtonCarte extends JToggleButton {
 
