@@ -19,7 +19,7 @@ public class ButtonCarte extends JToggleButton {
 	}
 	
 	public ButtonCarte(String fileName) {
-		super(new ImageIcon(fileName));
+		super(new ImageIcon(ButtonCarte.class.getResource(fileName)));
 	}
 	
 	public ButtonCarte(String fileName, Dimension dimension) {
@@ -30,7 +30,7 @@ public class ButtonCarte extends JToggleButton {
 	public static ImageIcon imageSize(String fileName, Dimension dimension) {
 		Image img;
 		try {
-			img = ImageIO.read(new File(fileName));
+			img = ImageIO.read(ButtonCarte.class.getResource(fileName));
 			Image imgScaled = img.getScaledInstance((int) dimension.getWidth(), (int) dimension.getHeight(), 0);
 			return new ImageIcon(imgScaled);
 		} catch (IOException e) {

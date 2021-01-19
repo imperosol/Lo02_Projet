@@ -364,7 +364,7 @@ public class InterfaceJeu implements ActionListener,Observer{
 		Carte carteVictoire = joueurEnCours.getCarteVictoire();
 		if (!partie.getModeAvance()) {
 			jPCVictoire.removeAll();
-			jPCVictoire.add(new JLabel(new ImageIcon(carteVictoire.getFileName())));
+			jPCVictoire.add(new JLabel(new ImageIcon(getClass().getResource(carteVictoire.getFileName()))));
 		}
 		resetMain(5);
 		jPCVictoire.updateUI();
@@ -638,6 +638,7 @@ public class InterfaceJeu implements ActionListener,Observer{
 				resetMain(partie.getJoueurEnCours().getNumCarteJouee());
 			}
 			else {
+				System.out.println("OHEEE");
 				resetJoueur();
 			}
 		}

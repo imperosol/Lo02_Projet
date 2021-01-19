@@ -19,12 +19,11 @@ public class Carte {
 	 */
 	public String getFileName() {
 		StringBuffer nomFichier = new StringBuffer();
-		nomFichier.append("./images/");
+		nomFichier.append("/images/");
 		nomFichier.append(this.couleur.getAbreviation());
 		nomFichier.append(this.forme.getAbreviation());
 		nomFichier.append(!(this.plein) ? "P" : "V");
 		nomFichier.append(".jpg");
-		
 		return nomFichier.toString();
 	}
 	
