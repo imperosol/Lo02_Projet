@@ -213,7 +213,7 @@ public class Score implements ScoreVisitor{
 	@Override
 	/**
 	 * 
-	 * visite un joueur
+	 * Visite un joueur
 	 * @param joueur a visiter
 	 * 
 	 */
@@ -224,7 +224,7 @@ public class Score implements ScoreVisitor{
 	@Override
 	/**
 	 * 
-	 * visite la partie
+	 * Visite la partie
 	 * @param partie a visiter
 	 * 
 	 */
