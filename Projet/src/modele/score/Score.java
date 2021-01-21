@@ -9,6 +9,18 @@ import modele.Carte;
 import modele.Partie;
 import modele.joueur.Joueur;
 
+/**
+ * 
+ * La classe Score gère le comptage du score en fin de partie
+ * elle gère le plateau le joueur courant, la pioche,...
+ * 
+ * 
+ * 
+ *@see ScoreVisitor
+
+ * @author PATEAU T && GRIFFIN S
+ *
+ */
 public class Score implements ScoreVisitor{
 	private Map<List<Integer>,Carte> plateau;
 	
@@ -17,6 +29,11 @@ public class Score implements ScoreVisitor{
 	private List<Joueur> player = new ArrayList<Joueur>();
 	private List<Integer> score = new ArrayList<Integer>();
 	
+	/**
+	 * 
+	 * Construit le score
+	 * 
+	 */
 	public Score(Partie partie) {
 		this.visit(partie);
 		Iterator<Joueur> it = this.player.iterator();
@@ -25,7 +42,13 @@ public class Score implements ScoreVisitor{
 		}
 	}
 	
-	
+	/**
+	 * 
+	 * Compte le score de la partie
+	 * 
+	 * @return retourne une liste avec les scores de chaques joueurs
+	 * 
+	 */
 	public List<Integer> scorePartie() {
 		
 		for(int i=0;i<player.size();i++) {
@@ -37,6 +60,15 @@ public class Score implements ScoreVisitor{
 		
 		return score;
 	}
+	
+	/**
+	 * 
+	 * Compte le score d'un joueur
+	 * 
+	 * @param index du joueur dont il faut compter le score
+	 * @return retourne le liste du joueur
+	 * 
+	 */
 	
 	public Integer scoreJoueur(int i) {
 		Carte carteVictoire = this.carteVictoire.get(i);
@@ -51,6 +83,13 @@ public class Score implements ScoreVisitor{
 		return score;
 	}
 
+	/**
+	 * Compte le score de toutes les lignes ou colonnes en fonction d'une carte victoire
+	 * 
+	 * @param carte victoire d'un joueur
+	 * @param 0 si on compte ligne, 1 si on compte colonne
+	 * 
+	 */
 	public int compterScoreLigneColonne(Carte carteVictoire, int posX) { //posX = 0 si on comte ligne et 1 si on compte colonne
 		
 		int score = 0;
@@ -143,10 +182,26 @@ public class Score implements ScoreVisitor{
 		return score;
 	}
 	
+	/**
+	 * 
+	 * Retourne une chaine de caractère avec le score d'une série de carte
+	 * 
+	 * @param prend colonne ou ligne en paramètre
+	 * @param numéro de la ligne ou colonne
+	 * @param nombre de cartes dans la série
+	 * @param forme, couleur ou plein de la série
+	 * @param score obtenu avec la série
+	 * @return une chaine de caractère avec le score d'une série de carte
+	 */
 	public String affScore(String pos, int i, int j, String type,int score) {
 		return pos + " " + i + " : série de " + j + " " + type + " - " + score + "pts";
 	}
 	
+	/**
+	 * 
+	 * Place la carte victoire du joueur à l'emplacement dédié si on utilise le plateau Variante
+	 * @param Carte victoire du joueur
+	 */
 	public void placerCarteVictoire(int i) {
 		if (this.positionCarteVictoire != null) {
 			plateau.put(positionCarteVictoire, this.carteVictoire.get(i));
@@ -154,13 +209,25 @@ public class Score implements ScoreVisitor{
 	}
 	
 	//Visiteur
+	
 	@Override
+	/**
+	 * 
+	 * visite un joueur
+	 * @param joueur a visiter
+	 * 
+	 */
 	public void visit(Joueur joueur) {
 		this.carteVictoire.add(joueur.getCarteVictoire());
 	}
 	
-
 	@Override
+	/**
+	 * 
+	 * visite la partie
+	 * @param partie a visiter
+	 * 
+	 */
 	public void visit(Partie partie) {
 		this.plateau = partie.getPlateau();
 		this.positionCarteVictoire = partie.getPositionCarteVictoire();
