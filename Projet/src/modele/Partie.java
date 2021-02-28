@@ -23,7 +23,7 @@ import vue.RunInterface;
 
 @SuppressWarnings("deprecation")
 public class Partie extends Observable implements ScoreInterface {
-	// pattern stratégie pour forme plateau
+	// pattern stratÃ©gie pour forme plateau
 	private Map<List<Integer>,Carte> plateau = new HashMap<List<Integer>,Carte>(); // plateau de jeu qui lie position et carte
 	private Map<List<Integer>,Boolean> plateauBool = new HashMap<List<Integer>,Boolean>(); // plateau contenant les posititons ou on peut mettre des cartes
 
@@ -31,11 +31,11 @@ public class Partie extends Observable implements ScoreInterface {
 	private List<Joueur> joueur;
 	private Joueur joueurEnCours;
 	
-	private ContextPlateau context; // Stock stratégie utilisée
+	private ContextPlateau context; // Stock stratÃ©gie utilisÃ©e
 	
 	private int nbrJoueur;
 	private boolean modeAvance;
-	private Carte carteCachee; // Stock carte cachée
+	private Carte carteCachee; // Stock carte cachÃ©e
 	private List<Integer> positionCarteVictoire = null;
 	private boolean fin = false;
 	private Context contextPlateau;
@@ -54,39 +54,40 @@ public class Partie extends Observable implements ScoreInterface {
 		List<Integer> position;
 
 		//initialistation plateau
-		if (Plateau == "rectangulaire") {
-			this.context = new ContextPlateau(new PlateauRectangle());
-			this.contextPlateau = Context.rectangle;
-		}
-		else if (Plateau == "triangulaire") {
-			this.context = new ContextPlateau(new PlateauTriangle());
-			this.contextPlateau = Context.triangle;
-		}
-		else {
-			position = new ArrayList<Integer>();
-			position.add(-1);
-			position.add(0);
-			this.context = new ContextPlateau(new PlateauVariante(position));
-			this.positionCarteVictoire = position;
-			this.contextPlateau = Context.variante;
+		switch (Plateau) {	
+			case "Rectangle":
+				this.context = new ContextPlateau(new PlateauRectangle());
+				this.contextPlateau = Context.rectangle;
+				break;
+			case "Triangle":
+				this.context = new ContextPlateau(new PlateauTriangle());
+				this.contextPlateau = Context.triangle;
+				break;
+			default:
+				position = new ArrayList<Integer>();
+				position.add(-1);
+				position.add(0);
+				this.context = new ContextPlateau(new PlateauVariante(position));
+				this.positionCarteVictoire = position;
+				this.contextPlateau = Context.variante;
+				break;
 		}
 				
 		this.nbrJoueur=0;
 		this.joueur = new ArrayList<Joueur>();
-
 		for (int i=0;i<3;i++) {
 			if (Joueur[i]=="Humain") {
 				this.joueur.add(new Joueur(i+1,new JoueurReel(this) , this, this.pioche));
 				nbrJoueur++;
 			}
 		
-			if (Joueur[i]=="IA") {
-				this.joueur.add(new Joueur(i+1,new IAAleatoire() , this, this.pioche)); 
-				nbrJoueur++;
+			else if (Joueur[i]=="IA") {
+				this.joueur.add(new Joueur(i+1,new IAAleatoire() , this, this.pioche));
+				nbrJoueur++; 
 			}
 		}
 		fin = false;
-		joueurEnCours = joueur.get(joueur.size()-1);
+		joueurEnCours = joueur.get(nbrJoueur - 1);
 	
 		InterfaceJeu.runInterface(this);
 		InterfaceCommande Commande = new InterfaceCommande(this);
@@ -133,8 +134,9 @@ public class Partie extends Observable implements ScoreInterface {
 	
 	public void changerJoueur() {
 		//permet de passer au joueur suivant
-		int numJoueur = joueurEnCours.getNumJoueur();
-		numJoueur = numJoueur%nbrJoueur;
+		//int numJoueur = joueurEnCours.getNumJoueur();
+		int numJoueur = (++numJoueur) % nbrJoueur; 
+		//numJoueur = numJoueur%nbrJoueur;
 		joueurEnCours = joueur.get(numJoueur);
 		if (joueurEnCours.getIA()) {
 			joueurEnCours.tour();
@@ -156,9 +158,9 @@ public class Partie extends Observable implements ScoreInterface {
 
 
 	
-	/*Méthodes du plateau via un pattern strategy*/
+	/*MÃ©thodes du plateau via un pattern strategy*/
 	
-	/* renvoie plateau avec les positions où on peut rajouter des cartes */
+	/* renvoie plateau avec les positions oÃ¹ on peut rajouter des cartes */
 	public Map<List<Integer>,Boolean> ouAjouterCarte() {
 		
 		this.plateauBool = context.ouAjouterCarte(this.plateau);
@@ -177,7 +179,7 @@ public class Partie extends Observable implements ScoreInterface {
 		return this.plateauBool;
 	}
 	
-	//TODO déguelasse à changer si le temps
+	//TODO dÃ©guelasse Ã  changer si le temps
 	public Map<List<Integer>,Boolean> ouAjouterCarteReset() {
 		
 		this.plateauBool = context.ouAjouterCarte(this.plateau);
@@ -196,7 +198,7 @@ public class Partie extends Observable implements ScoreInterface {
 		return this.plateauBool;
 	}
 	
-	/* renvoie plateau avec les positions où on peut bouger la carte en position */
+	/* renvoie plateau avec les positions oÃ¹ on peut bouger la carte en position */
 	public Map<List<Integer>,Boolean> ouBougerCarte(List<Integer> position) {
 		this.plateauBool = context.ouBougerCarte(this.plateau,position);
 		if (this.plateauBool.size()==0) {
@@ -210,7 +212,7 @@ public class Partie extends Observable implements ScoreInterface {
 	}
 	
 	/* permet d'ajouter une carte sur plateau
-	 * retourne vrai si la carte a été ajoutée */
+	 * retourne vrai si la carte a Ã©tÃ© ajoutÃ©e */
 	public void ajouterCarte(List<Integer> position, Carte carte) {
 		
 		if (this.plateauBool.containsKey(position)) {
@@ -228,15 +230,15 @@ public class Partie extends Observable implements ScoreInterface {
 	
 	
 	/* permet de bouger une carte sur plateau
-	 * retourne vrai si la carte a été bougée */
+	 * retourne vrai si la carte a Ã©tÃ© bougÃ©e */
 	public void bougerCarte(List<Integer> positionCarte, List<Integer> positionFinale) {
 		
 		if (this.plateauBool.containsKey(positionFinale)==false) {
-			System.out.println("la carte ne peux pas être bougée ici");
+			System.out.println("la carte ne peux pas Ãªtre bougÃ©e ici");
 		}
 		else {
 			Carte carteABouger = this.plateau.get(positionCarte);
-			this.plateau.remove(positionCarte); // on enlève la carte du plateau pour la remettre dans une nouvelle position
+			this.plateau.remove(positionCarte); // on enlÃ¨ve la carte du plateau pour la remettre dans une nouvelle position
 			this.plateau.put(positionFinale,carteABouger); 
 
 			ouAjouterCarte();
